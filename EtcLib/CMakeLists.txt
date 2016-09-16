@@ -13,12 +13,19 @@
 # limitations under the License.
 
 project(EtcLib)
-include_directories(./Etc)
-include_directories(./EtcCodec)
+
+set(INCLUDE_DIRS
+    "Etc"
+	"EtcCodec"
+)
+
+include_directories(${INCLUDE_DIRS})
 
 file(GLOB SOURCES
 	${PROJECT_SOURCE_DIR}/Etc/*.h
 	${PROJECT_SOURCE_DIR}/EtcCodec/*.h
 	${PROJECT_SOURCE_DIR}/Etc/*.cpp
 	${PROJECT_SOURCE_DIR}/EtcCodec/*.cpp)
-ADD_LIBRARY(EtcLib ${SOURCES})
+
+ADD_LIBRARY(${PROJECT_NAME} ${SOURCES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
