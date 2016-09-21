@@ -79,7 +79,7 @@ public:
 		{
 			apstrCompareFilename[uiComparison] = nullptr;
 		}
-		fEffort = 40.0f;
+		fEffort = ETCCOMP_DEFAULT_EFFORT_LEVEL;
 		//Rec. 709 or BT.709...the default
 		e_ErrMetric = ErrorMetric::BT709;
 		uiJobs = MIN_JOBS;

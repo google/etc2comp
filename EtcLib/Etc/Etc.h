@@ -21,6 +21,10 @@
 #include "EtcColor.h"
 #include "EtcErrorMetric.h"
 
+#define ETCCOMP_MIN_EFFORT_LEVEL (0.0f)
+#define ETCCOMP_DEFAULT_EFFORT_LEVEL (40.0f)
+#define ETCCOMP_MAX_EFFORT_LEVEL (100.0f)
+
 namespace Etc
 {
 	class Block4x4EncodingBits;

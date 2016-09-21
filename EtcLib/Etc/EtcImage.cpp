@@ -220,15 +220,15 @@ namespace Etc
 			return m_encodingStatus;
 		}
 
-		if (m_fEffort < 0.0f)
+		if (m_fEffort < ETCCOMP_MIN_EFFORT_LEVEL)
 		{
 			AddToEncodingStatus(WARNING_EFFORT_OUT_OF_RANGE);
-			m_fEffort = 0.0f;
+			m_fEffort = ETCCOMP_MIN_EFFORT_LEVEL;
 		}
-		else if (m_fEffort > 100.0f)
+		else if (m_fEffort > ETCCOMP_MAX_EFFORT_LEVEL)
 		{
 			AddToEncodingStatus(WARNING_EFFORT_OUT_OF_RANGE);
-			m_fEffort = 100.0f;
+			m_fEffort = ETCCOMP_MAX_EFFORT_LEVEL;
 		}
 		if (a_uiJobs < 1)
 		{
@@ -276,7 +276,7 @@ namespace Etc
 		}
 
 		// perform effort-based encoding
-		if (m_fEffort > 0.0f)
+		if (m_fEffort > ETCCOMP_MIN_EFFORT_LEVEL)
 		{
 			unsigned int uiFinishedBlocks = 0;
 			unsigned int uiTotalEffortBlocks = static_cast<unsigned int>(roundf(0.01f * m_fEffort  * GetNumberOfBlocks()));
