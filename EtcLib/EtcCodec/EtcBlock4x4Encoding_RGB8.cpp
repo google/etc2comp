@@ -1715,9 +1715,10 @@ namespace Etc
 			{
 				afX[uiPixel] = (float)uiPixel;
 				afY[uiPixel] = paf4Pixels[uiPixel].f[uiComponent];
-				Etc::Regression(afX, afY, a_uiPixels, 
-								&(pf4Slope->f[uiComponent]), &(pf4Offset->f[uiComponent]));
+				
 			}
+			Etc::Regression(afX, afY, a_uiPixels,
+				&(pf4Slope->f[uiComponent]), &(pf4Offset->f[uiComponent]));
 		}
 
 	}
