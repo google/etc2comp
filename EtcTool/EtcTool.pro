@@ -26,7 +26,8 @@ SOURCES += \
     EtcFileHeader.cpp \
     EtcMemTest.cpp \
     EtcSourceImage.cpp \
-    EtcTool.cpp
+    EtcTool.cpp \
+    ../third_party/lodepng/lodepng.cpp
 
 HEADERS +=\
         etctool_global.h \
@@ -36,11 +37,7 @@ HEADERS +=\
     EtcFileHeader.h \
     EtcMemTest.h \
     EtcSourceImage.h \
-    EtcTool.h
+    EtcTool.h \
+    ../third_party/lodepng/lodepng.h
 
 LIBS += -L$$BUILD_DIR
-
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}

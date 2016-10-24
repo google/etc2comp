@@ -55,8 +55,3 @@ HEADERS +=\
     EtcCodec/EtcErrorMetric.h \
     EtcCodec/EtcIndividualTrys.h \
     EtcCodec/EtcSortedBlockList.h
-
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
