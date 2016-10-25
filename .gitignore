@@ -27,6 +27,7 @@ CMakeFiles/
 *.vcxproj*
 *.sln
 *.cmake
+*.user
 CmakeCache.txt
 build_*/*
 !build_*/gen_xcode.sh
