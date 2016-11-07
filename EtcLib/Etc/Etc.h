@@ -20,6 +20,7 @@
 #include "EtcImage.h"
 #include "EtcColor.h"
 #include "EtcErrorMetric.h"
+#include "etclib_global.h"
 
 #define ETCCOMP_MIN_EFFORT_LEVEL (0.0f)
 #define ETCCOMP_DEFAULT_EFFORT_LEVEL (40.0f)
@@ -30,7 +31,7 @@ namespace Etc
 	class Block4x4EncodingBits;
 
 	// C-style inteface to the encoder
-	void Encode(float *a_pafSourceRGBA,
+    ETCLIBSHARED_EXPORT void Encode(float *a_pafSourceRGBA,
 				unsigned int a_uiSourceWidth,
 				unsigned int a_uiSourceHeight,
 				Image::Format a_format,

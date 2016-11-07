@@ -19,7 +19,6 @@
 #endif
 
 #include "EtcAnalysis.h"
-
 #include "EtcTool.h"
 #include "EtcComparison.h"
 #include "Etc.h"

@@ -20,7 +20,7 @@
 #include "EtcColorFloatRGBA.h"
 #include "EtcBlock4x4EncodingBits.h"
 #include "EtcErrorMetric.h"
-
+#include "etclib_global.h"
 
 namespace Etc
 {
@@ -28,7 +28,7 @@ namespace Etc
 	class EncoderSpec;
 	class SortedBlockList;
 
-    class Image
+    class ETCLIBSHARED_EXPORT Image
     {
     public:
 
@@ -97,59 +97,57 @@ namespace Etc
 		EncodingStatus Encode(Format a_format, ErrorMetric a_errormetric, float a_fEffort, 
 			unsigned int a_uiJobs, unsigned int a_uiMaxJobs);
 
-		inline void AddToEncodingStatus(EncodingStatus a_encStatus)
+        void AddToEncodingStatus(EncodingStatus a_encStatus)
 		{
 			m_encodingStatus = (EncodingStatus)((unsigned int)m_encodingStatus | (unsigned int)a_encStatus);
 		}
 		
-		inline unsigned int GetSourceWidth(void)
-		{
-			return m_uiSourceWidth;
-		}
+        unsigned int GetSourceWidth(void);
 
-		inline unsigned int GetSourceHeight(void)
+
+        unsigned int GetSourceHeight(void)
 		{
 			return m_uiSourceHeight;
 		}
 
-		inline unsigned int GetExtendedWidth(void)
+        unsigned int GetExtendedWidth(void)
 		{
 			return m_uiExtendedWidth;
 		}
 
-		inline unsigned int GetExtendedHeight(void)
+        unsigned int GetExtendedHeight(void)
 		{
 			return m_uiExtendedHeight;
 		}
 
-		inline unsigned int GetNumberOfBlocks()
+        unsigned int GetNumberOfBlocks()
 		{
 			return m_uiBlockColumns * m_uiBlockRows;
 		}
 
-		inline Block4x4 * GetBlocks()
+        Block4x4 * GetBlocks()
 		{
 			return m_pablock;
 		}
 
-		inline unsigned char * GetEncodingBits(void)
+        unsigned char * GetEncodingBits(void)
 		{
 			return m_paucEncodingBits;
 		}
 
-		inline unsigned int GetEncodingBitsBytes(void)
+        unsigned int GetEncodingBitsBytes(void)
 		{
 			return m_uiEncodingBitsBytes;
 		}
 
-		inline int GetEncodingTimeMs(void)
+        int GetEncodingTimeMs(void)
 		{
 			return m_iEncodeTime_ms;
 		}
 
 		float GetError(void);
 
-		inline ColorFloatRGBA * GetSourcePixel(unsigned int a_uiH, unsigned int a_uiV)
+        ColorFloatRGBA * GetSourcePixel(unsigned int a_uiH, unsigned int a_uiV)
 		{
 			if (a_uiH >= m_uiSourceWidth || a_uiV >= m_uiSourceHeight)
 			{
@@ -159,19 +157,19 @@ namespace Etc
 			return &m_pafrgbaSource[a_uiV*m_uiSourceWidth + a_uiH];
 		}
 
-		inline Format GetFormat(void)
+        Format GetFormat(void)
 		{
 			return m_format;
 		}
 
 		static Block4x4EncodingBits::Format DetermineEncodingBitsFormat(Format a_format);
 
-		inline static unsigned short CalcExtendedDimension(unsigned short a_ushOriginalDimension)
+        static unsigned short CalcExtendedDimension(unsigned short a_ushOriginalDimension)
 		{
 			return (unsigned short)((a_ushOriginalDimension + 3) & ~3);
 		}
 
-		inline ErrorMetric GetErrorMetric(void)
+        ErrorMetric GetErrorMetric(void)
 		{
 			return m_errormetric;
 		}

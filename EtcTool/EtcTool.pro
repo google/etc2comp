@@ -11,20 +11,25 @@ TEMPLATE = lib
 CONFIG += c++11
 
 DEFINES += ETCTOOL_LIBRARY
+DEFINES -= ETCLIB_LIBRARY
 
 isEmpty(BUILD_DIR) : BUILD_DIR = $$(BUILD_DIR)
 DESTDIR = $$BUILD_DIR
 
+LIBS += -L$$BUILD_DIR
+LIBS += -lEtcLib
+
 INCLUDEPATH += ../EtcLib/EtcCodec/ \
                ../EtcLib/Etc/ \
+               ../EtcLib/ \
                ../third_party/lodepng/
+
 
 SOURCES += \
     EtcAnalysis.cpp \
     EtcComparison.cpp \
     EtcFile.cpp \
     EtcFileHeader.cpp \
-    EtcMemTest.cpp \
     EtcSourceImage.cpp \
     EtcTool.cpp \
     ../third_party/lodepng/lodepng.cpp
@@ -35,9 +40,7 @@ HEADERS +=\
     EtcComparison.h \
     EtcFile.h \
     EtcFileHeader.h \
-    EtcMemTest.h \
     EtcSourceImage.h \
     EtcTool.h \
     ../third_party/lodepng/lodepng.h
 
-LIBS += -L$$BUILD_DIR

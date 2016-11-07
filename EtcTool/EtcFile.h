@@ -18,13 +18,14 @@
 
 #include "EtcColorFloatRGBA.h"
 #include "EtcImage.h"
+#include "etctool_global.h"
 
 namespace Etc
 {
 	class FileHeader;
 	class SourceImage;
 
-	class File
+    class ETCTOOLSHARED_EXPORT File
 	{
 	public:
 

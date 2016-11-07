@@ -17,11 +17,12 @@
 #pragma once
 
 #include "EtcColorFloatRGBA.h"
+#include "etctool_global.h"
 
 namespace Etc
 {
 
-	class SourceImage
+    class ETCTOOLSHARED_EXPORT SourceImage
 	{
 	public:
 
