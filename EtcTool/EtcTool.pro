@@ -12,6 +12,9 @@ CONFIG += c++11
 
 DEFINES += ETCTOOL_LIBRARY
 
+LIBS += -L$$BUILD_DIR
+LIBS += -lEtcLib
+
 isEmpty(BUILD_DIR) : BUILD_DIR = $$(BUILD_DIR)
 DESTDIR = $$BUILD_DIR
 
@@ -39,5 +42,3 @@ HEADERS +=\
     EtcSourceImage.h \
     EtcTool.h \
     ../third_party/lodepng/lodepng.h
-
-LIBS += -L$$BUILD_DIR
