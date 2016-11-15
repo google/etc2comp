@@ -1,9 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-10-24T11:51:10
-#
-#-------------------------------------------------
-
+include(../common.pri)
 QT       -= gui
 
 TARGET = EtcLib
@@ -12,8 +7,7 @@ CONFIG += c++11
 
 DEFINES += ETCLIB_LIBRARY
 
-isEmpty(BUILD_DIR) : BUILD_DIR = $$(BUILD_DIR)
-DESTDIR = $$BUILD_DIR
+DESTDIR = $$ETC2_LIBRARY_DESTINATION
 
 INCLUDEPATH += EtcCodec/ \
                Etc/
@@ -55,3 +49,11 @@ HEADERS +=\
     EtcCodec/EtcErrorMetric.h \
     EtcCodec/EtcIndividualTrys.h \
     EtcCodec/EtcSortedBlockList.h
+
+header_files.path = $$ETC2_BUILD_ROOT/include
+for(header, HEADERS) {
+  eval(header_files.files += $$header)
+}
+
+INSTALLS += header_files
+
