@@ -1,9 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-10-24T13:36:59
-#
-#-------------------------------------------------
-
+include(../common.pri)
 QT       -= gui
 
 TARGET = EtcTool
@@ -13,8 +8,9 @@ CONFIG += c++11
 DEFINES += ETCTOOL_LIBRARY
 DEFINES -= ETCLIB_LIBRARY
 
-isEmpty(BUILD_DIR) : BUILD_DIR = $$(BUILD_DIR)
-DESTDIR = $$BUILD_DIR
+DESTDIR = $$ETC2_LIBRARY_DESTINATION
+
+LIBS += -lEtcLib
 
 LIBS += -L$$BUILD_DIR
 LIBS += -lEtcLib
@@ -35,7 +31,7 @@ SOURCES += \
     ../third_party/lodepng/lodepng.cpp
 
 HEADERS +=\
-        etctool_global.h \
+    etctool_global.h \
     EtcAnalysis.h \
     EtcComparison.h \
     EtcFile.h \
@@ -44,3 +40,9 @@ HEADERS +=\
     EtcTool.h \
     ../third_party/lodepng/lodepng.h
 
+header_files.path = $$ETC2_BUILD_ROOT/include
+for(header, HEADERS) {
+  eval(header_files.files += $$header)
+}
+
+INSTALLS += header_files
