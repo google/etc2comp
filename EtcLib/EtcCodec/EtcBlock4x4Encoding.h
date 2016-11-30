@@ -35,8 +35,8 @@ namespace Etc
 		static const unsigned int ROWS = 4;
 		static const unsigned int COLUMNS = 4;
 		static const unsigned int PIXELS = ROWS * COLUMNS;
-		static constexpr float LUMA_WEIGHT = 3.0f;
-		static constexpr float CHROMA_BLUE_WEIGHT = 0.5f;
+		static const float LUMA_WEIGHT;
+		static const float CHROMA_BLUE_WEIGHT;
 
 		typedef enum
 		{

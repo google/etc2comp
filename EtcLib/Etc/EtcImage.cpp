@@ -206,7 +206,7 @@ namespace Etc
 	Image::EncodingStatus Image::Encode(Format a_format, ErrorMetric a_errormetric, float a_fEffort, unsigned int a_uiJobs, unsigned int a_uiMaxJobs)
 	{
 
-		std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+		auto start = std::chrono::steady_clock::now();
 		
 		m_encodingStatus = EncodingStatus::SUCCESS;
 
@@ -362,7 +362,7 @@ namespace Etc
 			handle[i].get();
 		}
 
-		std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+		auto end = std::chrono::steady_clock::now();
 		std::chrono::milliseconds elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 		m_iEncodeTime_ms = (int)elapsed.count();
 
