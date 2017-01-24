@@ -26,7 +26,7 @@ namespace Etc
 {
 	class Block4x4EncodingBits;
 
-	class Block4x4
+    class ETCLIBSHARED_EXPORT Block4x4
 	{
 	public:
 

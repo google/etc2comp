@@ -18,13 +18,14 @@
 
 #include "EtcColorFloatRGBA.h"
 #include "EtcImage.h"
+#include "etctool_global.h"
 
 namespace Etc
 {
 	class FileHeader;
 	class SourceImage;
 
-	class File
+    class ETCTOOLSHARED_EXPORT File
 	{
 	public:
 
@@ -36,9 +37,9 @@ namespace Etc
 		};
 
 		File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imageformat,
-				unsigned char *a_paucEncodingBits, unsigned int a_uiEncodingBitsBytes,
 				unsigned int a_uiSourceWidth, unsigned int a_uiSourceHeight,
-				unsigned int a_uiExtendedWidth, unsigned int a_uiExtendedHeight);
+        unsigned int a_uiExtendedWidth, unsigned int a_uiExtendedHeight,
+        unsigned int a_mipLevels);
 
 		File(const char *a_pstrFilename, Format a_fileformat);
 		~File();
@@ -46,6 +47,11 @@ namespace Etc
 
 		void Read(const char *a_pstrFilename);
 		void Write(void);
+
+    inline unsigned int GetMipLevels(void)
+    {
+      return m_mipLevels;
+    }
 
 		inline unsigned int GetSourceWidth(void)
 		{
@@ -72,28 +78,31 @@ namespace Etc
 			return m_imageformat;
 		}
 
-		inline unsigned int GetEncodingBitsBytes()
+    inline unsigned int GetEncodingBitsBytes(int level)
 		{
-			return m_uiEncodingBitsBytes;
+      return m_uiEncodingBitsBytes[level];
 		}
 
-		inline unsigned char * GetEncodingBits()
+    inline unsigned char * GetEncodingBits(int level)
 		{
-			return m_paucEncodingBits;
+      return m_paucEncodingBits[level];
 		}
 		void UseSingleBlock(int a_iPixelX = -1, int a_iPixelY = -1);
+
+    void AddLevel(int levelIndex, unsigned char *a_paucEncodingBits, unsigned int a_uiEncodingBitsBytes);
 	private:
 
 		char *m_pstrFilename;               // includes directory path and file extension
 		Format m_fileformat;
 		Image::Format m_imageformat;
 		FileHeader *m_pheader;
-		unsigned char *m_paucEncodingBits;
-		unsigned int m_uiEncodingBitsBytes;
+    unsigned char **m_paucEncodingBits;
+    unsigned int *m_uiEncodingBitsBytes;
 		unsigned int m_uiSourceWidth;
 		unsigned int m_uiSourceHeight;
 		unsigned int m_uiExtendedWidth;
 		unsigned int m_uiExtendedHeight;
+    unsigned int m_mipLevels;
 	};
 
 }

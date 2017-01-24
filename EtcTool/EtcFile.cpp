@@ -38,9 +38,9 @@ using namespace Etc;
 // ----------------------------------------------------------------------------------------------------
 //
 File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imageformat,
-			unsigned char *a_paucEncodingBits, unsigned int a_uiEncodingBitsBytes,
 			unsigned int a_uiSourceWidth, unsigned int a_uiSourceHeight,
-			unsigned int a_uiExtendedWidth, unsigned int a_uiExtendedHeight)
+      unsigned int a_uiExtendedWidth, unsigned int a_uiExtendedHeight,
+      unsigned int a_mipLevels)
 {
 	if (a_pstrFilename == nullptr)
 	{
@@ -61,12 +61,14 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 
 	m_imageformat = a_imageformat;
 
-	m_paucEncodingBits = a_paucEncodingBits;
-	m_uiEncodingBitsBytes = a_uiEncodingBitsBytes;
 	m_uiSourceWidth = a_uiSourceWidth;
 	m_uiSourceHeight = a_uiSourceHeight;
 	m_uiExtendedWidth = a_uiExtendedWidth;
 	m_uiExtendedHeight = a_uiExtendedHeight;
+  m_mipLevels = a_mipLevels;
+
+  m_paucEncodingBits = new unsigned char*[m_mipLevels];
+  m_uiEncodingBitsBytes = new unsigned int[m_mipLevels];
 
 	switch (m_fileformat)
 	{
@@ -127,10 +129,10 @@ File::File(const char *a_pstrFilename, Format a_fileformat)
 	szResult = fread(&m_uiEncodingBitsBytes, 1, sizeof(unsigned int), pfile);
 	assert(szResult > 0);
 
-	m_paucEncodingBits = new unsigned char[m_uiEncodingBitsBytes];
-	assert(ftell(pfile) + m_uiEncodingBitsBytes <= fileSize);
-	szResult = fread(m_paucEncodingBits, 1, m_uiEncodingBitsBytes, pfile);
-	assert(szResult == m_uiEncodingBitsBytes);
+  m_paucEncodingBits[0] = new unsigned char[m_uiEncodingBitsBytes[0]];
+  assert(ftell(pfile) + m_uiEncodingBitsBytes[0] <= fileSize);
+  szResult = fread(m_paucEncodingBits[0], 1, m_uiEncodingBitsBytes[0], pfile);
+  assert(szResult == m_uiEncodingBitsBytes[0]);
 
 	uint32_t uiInternalFormat = ((FileHeader_Ktx*)m_pheader)->GetData()->m_u32GlInternalFormat;
 	uint32_t uiBaseInternalFormat = ((FileHeader_Ktx*)m_pheader)->GetData()->m_u32GlBaseInternalFormat;
@@ -180,7 +182,7 @@ File::File(const char *a_pstrFilename, Format a_fileformat)
 	unsigned int uiBlocks = m_uiExtendedWidth * m_uiExtendedHeight / 16;
 	Block4x4EncodingBits::Format encodingbitsformat = Image::DetermineEncodingBitsFormat(m_imageformat);
 	unsigned int expectedbytes = uiBlocks * Block4x4EncodingBits::GetBytesPerBlock(encodingbitsformat);
-	assert(expectedbytes == m_uiEncodingBitsBytes);
+  assert(expectedbytes == m_uiEncodingBitsBytes[0]);
 
 	fclose(pfile);
 }
@@ -204,6 +206,12 @@ File::~File()
 		delete m_pheader;
 		m_pheader = nullptr;
 	}
+}
+
+void File::AddLevel(int levelIndex, unsigned char *a_paucEncodingBits, unsigned int a_uiEncodingBitsBytes)
+{
+  m_paucEncodingBits[levelIndex] = a_paucEncodingBits;
+  m_uiEncodingBitsBytes[levelIndex] = a_uiEncodingBitsBytes;
 }
 
 void File::UseSingleBlock(int a_iPixelX, int a_iPixelY)
@@ -295,12 +303,20 @@ void File::Write()
 	}
 
 	m_pheader->Write(pfile);
-	unsigned int iResult = (int)fwrite(m_paucEncodingBits, 1, m_uiEncodingBitsBytes, pfile);
-	if (iResult != m_uiEncodingBitsBytes)
-	{
-		printf("Error: couldn't write Etc file (%s)\n", m_pstrFilename);
-		exit(1);
-	}
+
+  for (int i = 0; i < m_mipLevels; i++) {
+    // Write u32 image size
+    uint32_t u32ImageSize = GetEncodingBitsBytes(i);
+    size_t szBytesWritten = fwrite(&u32ImageSize, 1, sizeof(u32ImageSize), pfile);
+    assert(szBytesWritten == sizeof(u32ImageSize));
+
+    unsigned int iResult = (int)fwrite(m_paucEncodingBits[i], 1, m_uiEncodingBitsBytes[i], pfile);
+    if (iResult != m_uiEncodingBitsBytes[i])
+    {
+      printf("Error: couldn't write Etc file (%s)\n", m_pstrFilename);
+      exit(1);
+    }
+  }
 
 	fclose(pfile);
 

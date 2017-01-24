@@ -183,9 +183,8 @@ int main(int argc, const char * argv[])
 		}
 		Etc::File etcfile(commands.pstrOutputFilename, Etc::File::Format::INFER_FROM_FILE_EXTENSION,
 							commands.format,
-							paucEncodingBits, uiEncodingBitsBytes,
 							uiSourceWidth, uiSourceHeight,
-							uiExtendedWidth, uiExtendedHeight);
+              uiExtendedWidth, uiExtendedHeight, 0);
 		etcfile.Write();
 	}
 	else
@@ -212,9 +211,8 @@ int main(int argc, const char * argv[])
 		}
 		Etc::File etcfile(commands.pstrOutputFilename, Etc::File::Format::INFER_FROM_FILE_EXTENSION,
 							commands.format,
-							image.GetEncodingBits(), image.GetEncodingBitsBytes(),
 							image.GetSourceWidth(), image.GetSourceHeight(),
-							image.GetExtendedWidth(), image.GetExtendedHeight());
+              image.GetExtendedWidth(), image.GetExtendedHeight(), 0);
 
 		etcfile.Write();
 

@@ -179,6 +179,11 @@ namespace Etc
 
 	}
 
+    unsigned int Image::GetSourceWidth(void)
+    {
+        return m_uiSourceWidth;
+    }
+
 	// ----------------------------------------------------------------------------------------------------
 	//
 	Image::~Image(void)

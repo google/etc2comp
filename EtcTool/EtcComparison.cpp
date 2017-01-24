@@ -72,8 +72,8 @@ namespace Etc
 		m_pimage = new Image(etcfile.GetImageFormat(),
 								etcfile.GetSourceWidth(),
 								etcfile.GetSourceHeight(),
-								etcfile.GetEncodingBits(),
-								etcfile.GetEncodingBitsBytes(),
+                etcfile.GetEncodingBits(0),
+                etcfile.GetEncodingBitsBytes(0),
 								a_panalysisParent->GetImage(),
 								a_panalysisParent->GetImage()->GetErrorMetric());
 

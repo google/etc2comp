@@ -19,13 +19,14 @@
 #include "EtcFile.h"
 #include <stdio.h>
 #include <inttypes.h>
+#include "etctool_global.h"
 
 namespace Etc
 {
 
 	class Image;
 
-	class FileHeader
+    class ETCTOOLSHARED_EXPORT FileHeader
 	{
 	public:
 
