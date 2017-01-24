@@ -26,6 +26,11 @@ LIBS += -L$$ETC2_LIBRARY_DESTINATION
 
 macx {
   QMAKE_LFLAGS = -Wl,-install_name,$$ETC2_LIBRARY_DESTINATION/$(TARGET)
+  QMAKE_CXXFLAGS += -Wno-deprecated-register -Wno-return-stack-address
+
+  equals(QT_MAJOR_VERSION, 5):equals(QT_MINOR_VERSION, 6) {
+    QMAKE_LFLAGS += -stdlib=libc++
+  }
 }
 
 win32 {
