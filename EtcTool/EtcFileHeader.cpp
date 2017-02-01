@@ -153,7 +153,7 @@ namespace Etc
 		m_data.m_u32PixelDepth = 0;
 		m_data.m_u32NumberOfArrayElements = 0;
 		m_data.m_u32NumberOfFaces = 1;
-		m_data.m_u32NumberOfMipmapLevels = 1;
+    m_data.m_u32NumberOfMipmapLevels = m_pfile->GetMipLevels();
 
 	}
 
@@ -172,12 +172,6 @@ namespace Etc
 		{
 			fwrite(m_pkeyvaluepair, m_pkeyvaluepair->u32KeyAndValueByteSize, 1, a_pfile);
 		}
-		
-		// Write u32 image size
-		uint32_t u32ImageSize = m_pfile->GetEncodingBitsBytes();
-		szBytesWritten = fwrite(&u32ImageSize, 1, sizeof(u32ImageSize), a_pfile);
-		assert(szBytesWritten == sizeof(u32ImageSize));
-
 	}
 
 	// ----------------------------------------------------------------------------------------------------
