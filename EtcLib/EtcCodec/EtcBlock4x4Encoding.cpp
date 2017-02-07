@@ -141,6 +141,17 @@ namespace Etc
 
 			return fDRed*fDRed + fDGreen*fDGreen + fDBlue*fDBlue + fDAlpha*fDAlpha;
 		}
+		else if (m_errormetric == ErrorMetric::RGBX)
+		{
+			assert(a_fDecodedAlpha >= 0.0f);
+
+			float fDRed = a_frgbaDecodedColor.fR - a_frgbaSourcePixel.fR;
+			float fDGreen = a_frgbaDecodedColor.fG - a_frgbaSourcePixel.fG;
+			float fDBlue = a_frgbaDecodedColor.fB - a_frgbaSourcePixel.fB;
+			float fDAlpha = a_fDecodedAlpha - a_frgbaSourcePixel.fA;
+
+			return fDRed*fDRed + fDGreen*fDGreen + fDBlue*fDBlue + fDAlpha*fDAlpha;
+		}
 		else if (m_errormetric == ErrorMetric::REC709)
 		{
 			assert(a_fDecodedAlpha >= 0.0f);

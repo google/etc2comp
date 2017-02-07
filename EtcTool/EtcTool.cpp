@@ -441,6 +441,10 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 				{
 					e_ErrMetric = ErrorMetric::RGBA;
 				}
+				else if (strcmp(a_apstrArgs[iArg], "rgbx") == 0)
+				{
+					e_ErrMetric = ErrorMetric::RGBX;
+				}
 				else if (strcmp(a_apstrArgs[iArg], "rec709") == 0)
 				{
 					e_ErrMetric = ErrorMetric::REC709;
