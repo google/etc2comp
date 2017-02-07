@@ -686,7 +686,7 @@ void Commands::PrintUsageMessage(void)
 	printf("    -compare <comparison_image>   compares source_image to comparison_image\n");
 	printf("    -effort <amount>              number between 0 and 100\n");
 	printf("    -errormetric <error_metric>   specify the error metric, the options are\n");
-	printf("                                  rgba, rec709, numeric and normalxyz\n");
+	printf("                                  rgba, rgbx, rec709, numeric and normalxyz\n");
 	printf("    -format <etc_format>          ETC1, RGB8, SRGB8, RGBA8, SRGB8, RGB8A1,\n");
 	printf("                                  SRGB8A1 or R11\n");
 	printf("    -help                         prints this message\n");

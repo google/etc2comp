@@ -1,3 +1,13 @@
+../../TestImages/rgbx255.png
+-effort 100
+-format RGBA8
+-errormetric rgbx
+-output ../../EncodedImages/rgbx255.ktx
+-analyze ../../Analysis/rgbx255
+-verbose
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 C:\Users\BSI\Desktop\etc2comp\googleTest.png
 -format RGB8
 -errormetric rgba
