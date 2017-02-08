@@ -120,6 +120,7 @@ Options:
     -normalizexyz                 normalize RGB to have a length of 1
     -verbose or -v                shows status information during the encoding
                                   process
+	-mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)
 
 * -analyze will run an analysis of the encoding and place it in folder 
 "analysis_folder" (e.g. ../analysis/kodim05).  within the analysis_folder, a folder 

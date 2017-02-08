@@ -93,7 +93,7 @@ int RunMemTest(bool verboseOutput, size_t numTestIterations)
 	
 	vector<string> allImages;
 
-	string imagesDir = "D:\\source\\\etc2Sourcetree\\TestImages\\";
+	string imagesDir = "D:\\source\\etc2Sourcetree\\TestImages\\";
 	string outputDir = "C:\\Users\\BSI\\Desktop\\etc2comp\\";
 
 	hFind = FindFirstFile((imagesDir+"*").c_str(), &ffd);

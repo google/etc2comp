@@ -89,6 +89,7 @@ public:
 		i_vPixel = -1;
 		verboseOutput = false;
 		boolNormalizeXYZ = false;
+		mipmaps = 1;
 	}
 
 	bool ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[]);
@@ -111,6 +112,7 @@ public:
 	int i_hPixel;
 	int i_vPixel;
 	bool boolNormalizeXYZ;
+	int mipmaps;
 };
 
 #include "EtcFileHeader.h"
@@ -151,7 +153,59 @@ int main(int argc, const char * argv[])
 	unsigned int uiSourceWidth = sourceimage.GetWidth();
 	unsigned int uiSourceHeight = sourceimage.GetHeight();
 
-	if (USE_C_INTERFACE)
+	if(commands.mipmaps != 1)
+	{
+		int iEncodingTime_ms;
+
+		// Calculate the maximum number of possible mipmaps
+		{
+			int dim = (uiSourceWidth < uiSourceHeight)?uiSourceWidth:uiSourceHeight;
+			int maxMips = 0;
+			while(dim >= 1)
+			{
+				maxMips++;
+				dim >>= 1;
+			}
+			if( commands.mipmaps == 0 || commands.mipmaps > maxMips)
+			{
+				commands.mipmaps = maxMips;
+			}
+		}
+
+		Etc::RawImage *pMipmapImages = new Etc::RawImage[commands.mipmaps];
+
+		if (commands.verboseOutput)
+		{
+			printf("Encoding:\n");
+			printf("    effort = %.f\n", commands.fEffort);
+			printf("  encoding =  %s\n", Image::EncodingFormatToString(commands.format));
+			printf("  error metric: %s\n", ErrorMetricToString(commands.e_ErrMetric));
+		}
+		Etc::EncodeMipmaps((float *)sourceimage.GetPixels(),
+			uiSourceWidth, uiSourceHeight,
+			commands.format,
+			commands.e_ErrMetric,
+			commands.fEffort,
+			commands.uiJobs,
+			MAX_JOBS,
+			commands.mipmaps,
+			pMipmapImages,
+			&iEncodingTime_ms);
+		if (commands.verboseOutput)
+		{
+			printf("    encode time = %dms\n", iEncodingTime_ms);
+			printf("EncodedImage: %s\n", commands.pstrOutputFilename);
+		}
+		Etc::File etcfile(commands.pstrOutputFilename, Etc::File::Format::INFER_FROM_FILE_EXTENSION,
+			commands.format,
+			commands.mipmaps,
+			pMipmapImages,
+			uiSourceWidth, uiSourceHeight );
+		etcfile.Write();
+
+		delete [] pMipmapImages;
+	}
+	else if (USE_C_INTERFACE)
 	{
 		unsigned char *paucEncodingBits;
 		unsigned int uiEncodingBitsBytes;
@@ -613,7 +667,31 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 		{
 			verboseOutput = true;
 		}
+		else if (strcmp(a_apstrArgs[iArg], "-mipmaps") == 0 ||
+			strcmp(a_apstrArgs[iArg], "-m") == 0)
+		{
+			++iArg;
 
+			if (iArg >= (a_iArgs))
+			{
+				printf("Error: missing mipmap number parameter for -mipmaps\n");
+				return true;
+			}
+			else
+			{
+				unsigned int ui;
+				int result = sscanf(a_apstrArgs[iArg], "%u", &ui);
+				if (result == 1)
+				{
+					mipmaps = ui;
+				}
+				else
+				{
+					printf("Error: -mipmaps argument needs to be a number\n");
+					return true;
+				}
+			}
+		}
 		else if (a_apstrArgs[iArg][0] == '-')
         {
 			printf("Error: unknown option (%s)\n", a_apstrArgs[iArg]);
@@ -694,6 +772,7 @@ void Commands::PrintUsageMessage(void)
 	printf("    -normalizexyz                 normalize RGB to have a length of 1\n");
 	printf("    -verbose or -v                shows status information during the encoding\n");
 	printf("                                  process\n");
+	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)\n");
 	printf("\n");
 
 	exit(1);

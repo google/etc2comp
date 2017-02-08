@@ -20,6 +20,7 @@
 #include "EtcImage.h"
 #include "EtcColor.h"
 #include "EtcErrorMetric.h"
+#include <memory>
 
 #define ETCCOMP_MIN_EFFORT_LEVEL (0.0f)
 #define ETCCOMP_DEFAULT_EFFORT_LEVEL (40.0f)
@@ -28,6 +29,16 @@
 namespace Etc
 {
 	class Block4x4EncodingBits;
+
+	struct RawImage
+	{
+		int uiExtendedWidth;
+		int uiExtendedHeight;
+		unsigned int uiEncodingBitsBytes;
+		std::shared_ptr<unsigned char> paucEncodingBits;
+	};
+
+
 
 	// C-style inteface to the encoder
 	void Encode(float *a_pafSourceRGBA,
@@ -43,5 +54,17 @@ namespace Etc
 				unsigned int *a_puiExtendedWidth,
 				unsigned int *a_puiExtendedHeight,
 				int *a_piEncodingTime_ms, bool a_bVerboseOutput = false);
+
+	void EncodeMipmaps(float *a_pafSourceRGBA,
+		unsigned int a_uiSourceWidth,
+		unsigned int a_uiSourceHeight,
+		Image::Format a_format,
+		ErrorMetric a_eErrMetric,
+		float a_fEffort,
+		unsigned int a_uiJobs,
+		unsigned int a_uiMaxJobs,
+		unsigned int a_uiMaxMipmaps,
+		RawImage* a_pMipmaps,
+		int *a_piEncodingTime_ms, bool a_bVerboseOutput = false);
 
 }
