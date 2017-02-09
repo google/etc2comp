@@ -73,7 +73,8 @@ namespace Etc
 		{
 			float* pMipImage = new float[mipWidth*mipHeight*4];
 
-			FilterTwoPass(a_pafSourceRGBA, a_uiSourceWidth, a_uiSourceHeight, pMipImage, mipWidth, mipHeight, Etc::FilterLanczos3);
+			if ( FilterTwoPass(a_pafSourceRGBA, a_uiSourceWidth, a_uiSourceHeight, pMipImage, mipWidth, mipHeight, Etc::FilterLanczos3) )
+			{
 			
 			Image image(pMipImage, mipWidth, mipHeight,	a_eErrMetric);
 
@@ -87,8 +88,14 @@ namespace Etc
 
 			totalEncodingTime += image.GetEncodingTimeMs();
 
-			mipWidth >>= 1;
-			mipHeight >>= 1;
+				mipWidth >>= 1;
+				mipHeight >>= 1;
+			}
+			else
+			{
+				mipWidth = 0;
+				mipHeight = 0;
+			}
 
 			delete [] pMipImage;
 		}

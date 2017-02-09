@@ -157,6 +157,10 @@ error for A.
 * -verbose shows information on the current encoding process. It will then display the 
 PSNR and time time it took to encode the image.
 
+* -mipmaps takes an argument that specifies how many mipmaps to generate from the 
+source image.  The mipmaps are generated with a lanczos3 filter using edge clamping.
+If the mipmaps option is not specified no mipmaps are created.
+
 Note: Path names can use slashes or backslashes.  The tool will convert the 
 slashes to the appropriate polarity for the current platform.
 
