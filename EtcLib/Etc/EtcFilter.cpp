@@ -109,12 +109,13 @@ double FilterLinear( double t )
 //** Name: CalcContributions( int srcSize, 
 //**                          int destSize, 
 //**                          double filterSize, 
+//**						  bool wrap,
 //**                          double (*FilterProc)(double), 
 //**                          FilterWeights contrib[] )
 //** Returns: void
 //** Description:
 //**--------------------------------------------------------------------------
-void CalcContributions( int srcSize, int destSize, double filterSize, double (*FilterProc)(double), FilterWeights contrib[] )
+void CalcContributions( int srcSize, int destSize, double filterSize, bool wrap, double (*FilterProc)(double), FilterWeights contrib[] )
 {
     double scale;
     double filterScale;
@@ -124,7 +125,6 @@ void CalcContributions( int srcSize, int destSize, double filterSize, double (*F
     int   iRight;
     int   iLeft;
     int   iDest;
-    int   iSrc;
 
     scale = (double)destSize / srcSize;
     if ( scale < 1.0 )
@@ -147,25 +147,34 @@ void CalcContributions( int srcSize, int destSize, double filterSize, double (*F
         center = (double)iDest / scale;
 
         iLeft = (int)ceil(center - filterSize);
+		iRight = (int)floor(center + filterSize);
+
+		if ( !wrap )
+		{
         if ( iLeft < 0 )
         {
             iLeft = 0;
         }
 
-        iRight = (int)floor(center + filterSize);
         if ( iRight >= srcSize )
         {
             iRight = srcSize - 1;
         }
+		}
+
+		int numWeights = iRight - iLeft + 1;
 
         contrib[iDest].first = iLeft;
-        contrib[iDest].numWeights = iRight - iLeft + 1;
+        contrib[iDest].numWeights = numWeights;
+
         totalWeight = 0;
-        for (iSrc = iLeft; iSrc <= iRight; iSrc++)
+		double t = ((double)iLeft - center) * filterScale;
+		for (int i = 0; i < numWeights; i++)
         {
-            weight = (*FilterProc)((center - (double)iSrc) * filterScale) * filterScale;
+			weight = (*FilterProc)(t) * filterScale;
             totalWeight += weight;
-            contrib[iDest].weight[iSrc - iLeft] = weight;
+			contrib[iDest].weight[i] = weight;
+			t += filterScale;
         }
 
         //**--------------------------------------------------------
@@ -173,9 +182,9 @@ void CalcContributions( int srcSize, int destSize, double filterSize, double (*F
         //**--------------------------------------------------------
         if ( totalWeight > 0.0 )
         {   
-            for ( iSrc = iLeft; iSrc <= iRight; iSrc++)
+            for ( int i = 0; i < numWeights; i++)
             {
-                contrib[iDest].weight[iSrc- iLeft] /= totalWeight;
+                contrib[iDest].weight[i] /= totalWeight;
             }
         }
     }
@@ -193,7 +202,7 @@ void CalcContributions( int srcSize, int destSize, double filterSize, double (*F
 //**    contributions are determined by a weighting function parameter.
 //**-------------------------------------------------------------------------
 int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight, 
-                    RGBCOLOR *pDestImage, int destWidth, int destHeight, double (*FilterProc)(double) )
+                    RGBCOLOR *pDestImage, int destWidth, int destHeight, unsigned int wrapFlags, double (*FilterProc)(double) )
 {
     FilterWeights *contrib;
     RGBCOLOR *pPixel;
@@ -225,7 +234,8 @@ int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight,
     //**-------------------------------------------------------
     //** Horizontally filter the image into the temporary image
     //**-------------------------------------------------------
-    CalcContributions( srcWidth, destWidth, filterSize, FilterProc, contrib );
+	bool bWrapHorizontal = !!(wrapFlags&FILTER_WRAP_X);
+	CalcContributions( srcWidth, destWidth, filterSize, bWrapHorizontal, FilterProc, contrib );
     for ( iRow = 0; iRow < srcHeight; iRow++ )
     {
         for ( iCol = 0; iCol < destWidth; iCol++ )
@@ -238,6 +248,10 @@ int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight,
             for ( iWeight = 0; iWeight < contrib[iCol].numWeights; iWeight++ )
             {
                 iSrcCol = iWeight + contrib[iCol].first;
+				if (bWrapHorizontal)
+				{
+					iSrcCol = (iSrcCol < 0) ? (srcWidth + iSrcCol) : (iSrcCol >= srcWidth) ? (iSrcCol - srcWidth) : iSrcCol;
+				}
                 pSrcPixel = pSrcImage + (iRow * srcWidth) + iSrcCol;
                 dRed   += contrib[iCol].weight[iWeight] * pSrcPixel->rgba[0];
                 dGreen += contrib[iCol].weight[iWeight] * pSrcPixel->rgba[1];
@@ -256,7 +270,8 @@ int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight,
     //**-------------------------------------------------------
     //** Vertically filter the image into the destination image
     //**-------------------------------------------------------
-    CalcContributions( srcHeight, destHeight, filterSize, FilterProc, contrib );
+	bool bWrapVertical = !!(wrapFlags&FILTER_WRAP_Y);
+	CalcContributions(srcHeight, destHeight, filterSize, bWrapVertical, FilterProc, contrib);
     for ( iCol = 0; iCol < destWidth; iCol++ )
     {
         for ( iRow = 0; iRow < destHeight; iRow++ )
@@ -269,6 +284,10 @@ int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight,
             for ( iWeight = 0; iWeight < contrib[iRow].numWeights; iWeight++ )
             {
                 iSrcRow = iWeight + contrib[iRow].first;
+				if (bWrapVertical)
+				{
+					iSrcRow = (iSrcRow < 0) ? (srcHeight + iSrcRow) : (iSrcRow >= srcHeight) ? (iSrcRow - srcHeight) : iSrcRow;
+				}
                 pSrcPixel = pTempImage + (iSrcRow * destWidth) + iCol;
                 dRed   += contrib[iRow].weight[iWeight] * pSrcPixel->rgba[0];
                 dGreen += contrib[iRow].weight[iWeight] * pSrcPixel->rgba[1];

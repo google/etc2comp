@@ -62,6 +62,7 @@ namespace Etc
 		unsigned int a_uiJobs,
 		unsigned int a_uiMaxJobs,
 		unsigned int a_uiMaxMipmaps,
+		unsigned int a_uiMipFilterFlags,
 		RawImage* a_pMipmapImages,
 		int *a_piEncodingTime_ms, 
 		bool a_bVerboseOutput)
@@ -71,12 +72,26 @@ namespace Etc
 		int totalEncodingTime = 0;
 		for(unsigned int mip = 0; mip < a_uiMaxMipmaps && mipWidth >= 1 && mipHeight >= 1; mip++)
 		{
-			float* pMipImage = new float[mipWidth*mipHeight*4];
+			float* pImageData = nullptr;
+			float* pMipImage = nullptr;
 
-			if ( FilterTwoPass(a_pafSourceRGBA, a_uiSourceWidth, a_uiSourceHeight, pMipImage, mipWidth, mipHeight, Etc::FilterLanczos3) )
+			if(mip == 0)
+			{
+				pImageData = a_pafSourceRGBA;
+			}
+			else
+			{
+				pMipImage = new float[mipWidth*mipHeight*4];
+				if(FilterTwoPass(a_pafSourceRGBA, a_uiSourceWidth, a_uiSourceHeight, pMipImage, mipWidth, mipHeight, a_uiMipFilterFlags, Etc::FilterLanczos3) )
+				{
+					pImageData = pMipImage;
+				}
+			}
+
+			if ( pImageData )
 			{
 			
-			Image image(pMipImage, mipWidth, mipHeight,	a_eErrMetric);
+				Image image(pImageData, mipWidth, mipHeight,	a_eErrMetric);
 
 			image.m_bVerboseOutput = a_bVerboseOutput;
 			image.Encode(a_format, a_eErrMetric, a_fEffort, a_uiJobs, a_uiMaxJobs);
@@ -87,17 +102,20 @@ namespace Etc
 			a_pMipmapImages[mip].uiExtendedHeight = image.GetExtendedHeight();
 
 			totalEncodingTime += image.GetEncodingTimeMs();
-
-				mipWidth >>= 1;
-				mipHeight >>= 1;
 			}
-			else
+
+			if(pMipImage)
 			{
-				mipWidth = 0;
-				mipHeight = 0;
+				delete[] pMipImage;
 			}
 
-			delete [] pMipImage;
+			if (!pImageData)
+			{
+				break;
+			}
+
+			mipWidth >>= 1;
+			mipHeight >>= 1;
 		}
 
 		*a_piEncodingTime_ms = totalEncodingTime;
