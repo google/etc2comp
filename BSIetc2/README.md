@@ -121,6 +121,7 @@ Options:
     -verbose or -v                shows status information during the encoding
                                   process
 	-mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)
+	-mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)
 
 * -analyze will run an analysis of the encoding and place it in folder 
 "analysis_folder" (e.g. ../analysis/kodim05).  within the analysis_folder, a folder 
@@ -160,6 +161,10 @@ PSNR and time time it took to encode the image.
 * -mipmaps takes an argument that specifies how many mipmaps to generate from the 
 source image.  The mipmaps are generated with a lanczos3 filter using edge clamping.
 If the mipmaps option is not specified no mipmaps are created.
+
+* -mipwrap takes an argument that specifies the mipmap filter wrap mode.  The options 
+are "x", "y" and "xy" which specify wrapping in x only, y only or x and y respectively.
+The default options are clamping in both x and y.
 
 Note: Path names can use slashes or backslashes.  The tool will convert the 
 slashes to the appropriate polarity for the current platform.

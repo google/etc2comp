@@ -30,6 +30,7 @@ that can be created.
 #include "EtcConfig.h"
 
 #include "Etc.h"
+#include "EtcFilter.h"
 
 #include "EtcTool.h"
 #include "EtcSourceImage.h"
@@ -90,6 +91,7 @@ public:
 		verboseOutput = false;
 		boolNormalizeXYZ = false;
 		mipmaps = 1;
+		mipFilterFlags = Etc::FILTER_WRAP_NONE;
 	}
 
 	bool ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[]);
@@ -113,6 +115,7 @@ public:
 	int i_vPixel;
 	bool boolNormalizeXYZ;
 	int mipmaps;
+	unsigned int mipFilterFlags;
 };
 
 #include "EtcFileHeader.h"
@@ -189,6 +192,7 @@ int main(int argc, const char * argv[])
 			commands.uiJobs,
 			MAX_JOBS,
 			commands.mipmaps,
+			commands.mipFilterFlags,
 			pMipmapImages,
 			&iEncodingTime_ms);
 		if (commands.verboseOutput)
@@ -692,6 +696,32 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 				}
 			}
 		}
+		else if (strcmp(a_apstrArgs[iArg], "-mipwrap") == 0 ||
+			strcmp(a_apstrArgs[iArg], "-w") == 0)
+		{
+			++iArg;
+
+			if (iArg >= (a_iArgs))
+			{
+				printf("Error: missing parameter for -mipwrap\n");
+				return true;
+			}
+			else
+			{
+				if ( 0 == strcmp(a_apstrArgs[iArg], "x") )
+				{
+					mipFilterFlags = Etc::FILTER_WRAP_X;
+				}
+				else if (0 == strcmp(a_apstrArgs[iArg], "y"))
+				{
+					mipFilterFlags = Etc::FILTER_WRAP_Y;
+				}
+				else if (0 == strcmp(a_apstrArgs[iArg], "xy"))
+				{
+					mipFilterFlags = Etc::FILTER_WRAP_X | Etc::FILTER_WRAP_Y;
+				}
+			}
+		}
 		else if (a_apstrArgs[iArg][0] == '-')
         {
 			printf("Error: unknown option (%s)\n", a_apstrArgs[iArg]);
@@ -773,6 +803,7 @@ void Commands::PrintUsageMessage(void)
 	printf("    -verbose or -v                shows status information during the encoding\n");
 	printf("                                  process\n");
 	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)\n");
+	printf("    -mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)\n");
 	printf("\n");
 
 	exit(1);

@@ -10,6 +10,13 @@ enum FilterEnums
 	MaxFilterSize = 32
 };
 
+enum WrapFlags
+{
+	FILTER_WRAP_NONE = 0,
+	FILTER_WRAP_X = 0x1,
+	FILTER_WRAP_Y = 0x2
+};
+
 typedef struct tagFilterWeights
 {
 	int   first;
@@ -32,12 +39,12 @@ double FilterLinear( double t );
 double FilterLanczos3( double t );
 
 int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight, 
-                    RGBCOLOR *pDestImage, int destWidth, int destHeight, double (*FilterProc)(double) );
+                    RGBCOLOR *pDestImage, int destWidth, int destHeight, unsigned int wrapFlags, double (*FilterProc)(double) );
 void FilterResample( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight, 
                      RGBCOLOR *pDstImage, int dstWidth, int dstHeight );
 
 
-void CalcContributions(int srcSize, int destSize, double filterSize, double(*FilterProc)(double), FilterWeights contrib[]);
+void CalcContributions(int srcSize, int destSize, double filterSize, bool wrap, double(*FilterProc)(double), FilterWeights contrib[]);
 
 template <typename T>
 void FilterResample(T *pSrcImage, int srcWidth, int srcHeight, T *pDstImage, int dstWidth, int dstHeight)
@@ -131,7 +138,7 @@ void FilterResample(T *pSrcImage, int srcWidth, int srcHeight, T *pDstImage, int
 //**-------------------------------------------------------------------------
 template <typename T>
 int FilterTwoPass(T *pSrcImage, int srcWidth, int srcHeight,
-	T *pDestImage, int destWidth, int destHeight, double(*FilterProc)(double))
+	T *pDestImage, int destWidth, int destHeight, unsigned int wrapFlags, double(*FilterProc)(double))
 {
 	const int numComponents = 4;
 	FilterWeights *contrib;
@@ -158,7 +165,8 @@ int FilterTwoPass(T *pSrcImage, int srcWidth, int srcHeight,
 	//**-------------------------------------------------------
 	//** Horizontally filter the image into the temporary image
 	//**-------------------------------------------------------
-	CalcContributions(srcWidth, destWidth, filterSize, FilterProc, contrib);
+	bool bWrapHorizontal = !!(wrapFlags&FILTER_WRAP_X);
+	CalcContributions(srcWidth, destWidth, filterSize, bWrapHorizontal, FilterProc, contrib);
 	for (int iRow = 0; iRow < srcHeight; iRow++)
 	{
 		for (int iCol = 0; iCol < destWidth; iCol++)
@@ -171,6 +179,10 @@ int FilterTwoPass(T *pSrcImage, int srcWidth, int srcHeight,
 			for (int iWeight = 0; iWeight < contrib[iCol].numWeights; iWeight++)
 			{
 				int iSrcCol = iWeight + contrib[iCol].first;
+				if(bWrapHorizontal)
+				{
+					iSrcCol = (iSrcCol < 0)?(srcWidth+iSrcCol):(iSrcCol >= srcWidth)?(iSrcCol-srcWidth):iSrcCol;
+				}
 				T* pSrcPixel = pSrcImage + ((iRow * srcWidth) + iSrcCol)*numComponents;
 				dRed += contrib[iCol].weight[iWeight] * pSrcPixel[0];
 				dGreen += contrib[iCol].weight[iWeight] * pSrcPixel[1];
@@ -189,7 +201,8 @@ int FilterTwoPass(T *pSrcImage, int srcWidth, int srcHeight,
 	//**-------------------------------------------------------
 	//** Vertically filter the image into the destination image
 	//**-------------------------------------------------------
-	CalcContributions(srcHeight, destHeight, filterSize, FilterProc, contrib);
+	bool bWrapVertical = !!(wrapFlags&FILTER_WRAP_Y);
+	CalcContributions(srcHeight, destHeight, filterSize, bWrapVertical, FilterProc, contrib);
 	for (int iCol = 0; iCol < destWidth; iCol++)
 	{
 		for (int iRow = 0; iRow < destHeight; iRow++)
@@ -202,6 +215,10 @@ int FilterTwoPass(T *pSrcImage, int srcWidth, int srcHeight,
 			for (int iWeight = 0; iWeight < contrib[iRow].numWeights; iWeight++)
 			{
 				int iSrcRow = iWeight + contrib[iRow].first;
+				if (bWrapVertical)
+				{
+					iSrcRow = (iSrcRow < 0) ? (srcHeight + iSrcRow) : (iSrcRow >= srcHeight) ? (iSrcRow - srcHeight) : iSrcRow;
+				}
 				T* pSrcPixel = pTempImage + ((iSrcRow * destWidth) + iCol)*numComponents;
 				dRed += contrib[iRow].weight[iWeight] * pSrcPixel[0];
 				dGreen += contrib[iRow].weight[iWeight] * pSrcPixel[1];
