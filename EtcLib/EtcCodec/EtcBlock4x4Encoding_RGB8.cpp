@@ -385,6 +385,8 @@ namespace Etc
 	void Block4x4Encoding_RGB8::CalculateBaseColorsForTAndH(void)
 	{
 
+		bool boolRGBX = m_pblockParent->GetImageSource()->GetErrorMetric() == ErrorMetric::RGBX;
+
 		ColorFloatRGBA frgbaBlockAverage = (m_frgbaSourceAverageLeft + m_frgbaSourceAverageRight) * 0.5f;
 
 		// find pixel farthest from average gray line
@@ -394,7 +396,7 @@ namespace Etc
 		for (unsigned int uiPixel = 0; uiPixel < PIXELS; uiPixel++)
 		{
 			// don't count transparent
-			if (m_pafrgbaSource[uiPixel].fA == 0.0f)
+			if (m_pafrgbaSource[uiPixel].fA == 0.0f && !boolRGBX)
 			{
 				uiTransparentPixels++;
 			}

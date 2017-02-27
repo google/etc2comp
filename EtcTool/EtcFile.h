@@ -18,6 +18,7 @@
 
 #include "EtcColorFloatRGBA.h"
 #include "EtcImage.h"
+#include "Etc.h"
 
 namespace Etc
 {
@@ -40,6 +41,10 @@ namespace Etc
 				unsigned int a_uiSourceWidth, unsigned int a_uiSourceHeight,
 				unsigned int a_uiExtendedWidth, unsigned int a_uiExtendedHeight);
 
+		File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imageformat,
+			unsigned int a_uiNumMipmaps, RawImage *pMipmapImages,
+			unsigned int a_uiSourceWidth, unsigned int a_uiSourceHeight );
+
 		File(const char *a_pstrFilename, Format a_fileformat);
 		~File();
 		const char *GetFilename(void) { return m_pstrFilename; }
@@ -57,14 +62,28 @@ namespace Etc
 			return m_uiSourceHeight;
 		}
 
-		inline unsigned int GetExtendedWidth(void)
+		inline unsigned int GetExtendedWidth(unsigned int mipmapIndex = 0)
 		{
-			return m_uiExtendedWidth;
+			if (mipmapIndex < m_uiNumMipmaps)
+			{
+				return m_pMipmapImages[mipmapIndex].uiExtendedWidth;
+			}
+			else
+			{
+				return 0;
+			}
 		}
 
-		inline unsigned int GetExtendedHeight(void)
+		inline unsigned int GetExtendedHeight(unsigned int mipmapIndex = 0)
 		{
-			return m_uiExtendedHeight;
+			if (mipmapIndex < m_uiNumMipmaps)
+			{
+				return m_pMipmapImages[mipmapIndex].uiExtendedHeight;
+			}
+			else
+			{
+				return 0;
+			}
 		}
 
 		inline Image::Format GetImageFormat()
@@ -72,15 +91,35 @@ namespace Etc
 			return m_imageformat;
 		}
 
-		inline unsigned int GetEncodingBitsBytes()
+		inline unsigned int GetEncodingBitsBytes(unsigned int mipmapIndex = 0)
 		{
-			return m_uiEncodingBitsBytes;
+			if (mipmapIndex < m_uiNumMipmaps)
+			{
+				return m_pMipmapImages[mipmapIndex].uiEncodingBitsBytes;
+			}
+			else
+			{
+				return 0;
+			}
 		}
 
-		inline unsigned char * GetEncodingBits()
+		inline unsigned char*  GetEncodingBits(unsigned int mipmapIndex = 0)
 		{
-			return m_paucEncodingBits;
+			if( mipmapIndex < m_uiNumMipmaps)
+			{
+				return m_pMipmapImages[mipmapIndex].paucEncodingBits.get();
+			}
+			else
+			{
+				return nullptr;
+			}
 		}
+
+		inline unsigned int GetNumMipmaps() 
+		{
+			return m_uiNumMipmaps; 
+		}
+
 		void UseSingleBlock(int a_iPixelX = -1, int a_iPixelY = -1);
 	private:
 
@@ -88,12 +127,10 @@ namespace Etc
 		Format m_fileformat;
 		Image::Format m_imageformat;
 		FileHeader *m_pheader;
-		unsigned char *m_paucEncodingBits;
-		unsigned int m_uiEncodingBitsBytes;
+		unsigned int m_uiNumMipmaps;
+		RawImage*	 m_pMipmapImages;
 		unsigned int m_uiSourceWidth;
 		unsigned int m_uiSourceHeight;
-		unsigned int m_uiExtendedWidth;
-		unsigned int m_uiExtendedHeight;
 	};
 
 }

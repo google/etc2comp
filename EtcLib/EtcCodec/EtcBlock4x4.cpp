@@ -108,22 +108,30 @@ namespace Etc
 
 		case Image::Format::RGBA8:
 		case Image::Format::SRGBA8:
-			switch (m_sourcealphamix)
+			if (a_errormetric == RGBX)
 			{
-			case SourceAlphaMix::OPAQUE:
-				m_pencoding = new Block4x4Encoding_RGBA8_Opaque;
-				break;
-
-			case SourceAlphaMix::TRANSPARENT:
-				m_pencoding = new Block4x4Encoding_RGBA8_Transparent;
-				break;
-
-			case SourceAlphaMix::TRANSLUCENT:
 				m_pencoding = new Block4x4Encoding_RGBA8;
-				break;
+			}
+			else
+			{
+				switch (m_sourcealphamix)
+				{
+				case SourceAlphaMix::OPAQUE:
+					m_pencoding = new Block4x4Encoding_RGBA8_Opaque;
+					break;
 
-			default:
-				assert(0);
+				case SourceAlphaMix::TRANSPARENT:
+					m_pencoding = new Block4x4Encoding_RGBA8_Transparent;
+					break;
+
+				case SourceAlphaMix::TRANSLUCENT:
+					m_pencoding = new Block4x4Encoding_RGBA8;
+					break;
+
+				default:
+					assert(0);
+					break;
+				}
 				break;
 			}
 			break;
@@ -277,7 +285,7 @@ namespace Etc
 					
 					m_afrgbaSource[uiPixel] = (*pfrgbaSource).ClampRGBA();
 
-					if (m_afrgbaSource[uiPixel].fA == 1.0f)
+					if (m_afrgbaSource[uiPixel].fA == 1.0f || m_errormetric == RGBX)
 					{
 						m_pimageSource->m_iNumOpaquePixels++;
 					}
@@ -360,7 +368,7 @@ namespace Etc
 						}
 					}
 
-					if (m_afrgbaSource[uiPixel].fA == 1.0f)
+					if (m_afrgbaSource[uiPixel].fA == 1.0f || m_errormetric == RGBX)
 					{
 						uiOpaqueSourcePixels++;
 					}
