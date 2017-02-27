@@ -15,15 +15,21 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(EtcTest)
 
-set (CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/i386-linux-gnu/c++/4.8 -I/usr/include/c++/4.8")
+
+SET(CMAKE_CXX_STANDARD 11)
+SET(CXX_STANDARD_REQUIRED ON)
+
 IF (APPLE)
-	set (CMAKE_CXX_FLAGS "-I/usr/include/i386-linux-gnu/c++/4.8 -I/usr/include/c++/4.8 -std=c++11 -g3 -Wall -O3")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -Wall -O3")
 ELSE ()
 	IF (WIN32)
-		set (CMAKE_CXX_FLAGS "-I/usr/include/i386-linux-gnu/c++/4.8 -I/usr/include/c++/4.8 -W4 /EHsc")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W4 /EHsc")
 	ELSE()
-		set (CMAKE_CXX_FLAGS "-I/usr/include/i386-linux-gnu/c++/4.8 -I/usr/include/c++/4.8 -std=c++11 -pthread -g3 -Wall -O2")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -Wall")
 	ENDIF()
 ENDIF ()
+
+ADD_SUBDIRECTORY(third_party/lodepng)
 ADD_SUBDIRECTORY(EtcLib)
 ADD_SUBDIRECTORY(EtcTool)

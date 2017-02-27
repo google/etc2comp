@@ -13,16 +13,13 @@
 # limitations under the License.
 
 project(EtcTool)
-include_directories(../EtcLib/Etc)
-include_directories(../EtcLib/EtcCodec)
-include_directories(../third_party/lodepng)
 
 file(GLOB SOURCES
 	${PROJECT_SOURCE_DIR}/*.h
 	${PROJECT_SOURCE_DIR}/*.cpp
-	../third_party/lodepng/*.h
-	../third_party/lodepng/*.cpp)
-add_executable(EtcTool ${SOURCES})
+)
 
-target_link_libraries (EtcTool EtcLib)
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+target_link_libraries(${PROJECT_NAME} EtcLib lodepng)
 

@@ -99,10 +99,11 @@ namespace Etc
 
 		int iWidth;
 		int iHeight;
-		int iBitsPerPixel;
 		bool bool16BitImage = false;
 	
 #if USE_STB_IMAGE_LOAD
+		int iBitsPerPixel;
+
 		//if stb_iamge is available, only use it to load files other than png
 		char *fileExt = strrchr(m_pstrFilename, '.');
 
