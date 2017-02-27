@@ -22,6 +22,7 @@ namespace Etc
 	enum ErrorMetric
 	{
 		RGBA,
+		RGBX,
 		REC709,
 		NUMERIC,
 		NORMALXYZ,
@@ -37,6 +38,8 @@ namespace Etc
 		{
 		case RGBA:
 			return "RGBA";
+		case RGBX:
+			return "RGBX";
 		case REC709:
 			return "REC709";
 		case NUMERIC:

@@ -61,12 +61,15 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 
 	m_imageformat = a_imageformat;
 
-	m_paucEncodingBits = a_paucEncodingBits;
-	m_uiEncodingBitsBytes = a_uiEncodingBitsBytes;
+	m_uiNumMipmaps = 1;
+	m_pMipmapImages = new RawImage[m_uiNumMipmaps];
+	m_pMipmapImages[0].paucEncodingBits = std::shared_ptr<unsigned char>(a_paucEncodingBits, [](unsigned char *p) { delete[] p; } );
+	m_pMipmapImages[0].uiEncodingBitsBytes = a_uiEncodingBitsBytes;
+	m_pMipmapImages[0].uiExtendedWidth = a_uiExtendedWidth;
+	m_pMipmapImages[0].uiExtendedHeight = a_uiExtendedHeight;
+
 	m_uiSourceWidth = a_uiSourceWidth;
 	m_uiSourceHeight = a_uiSourceHeight;
-	m_uiExtendedWidth = a_uiExtendedWidth;
-	m_uiExtendedHeight = a_uiExtendedHeight;
 
 	switch (m_fileformat)
 	{
@@ -85,6 +88,58 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 
 }
 
+// ----------------------------------------------------------------------------------------------------
+//
+File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imageformat,
+	unsigned int a_uiNumMipmaps, RawImage *a_pMipmapImages,
+	unsigned int a_uiSourceWidth, unsigned int a_uiSourceHeight)
+{
+	if (a_pstrFilename == nullptr)
+	{
+		m_pstrFilename = const_cast<char *>("");
+	}
+	else
+	{
+		m_pstrFilename = new char[strlen(a_pstrFilename) + 1];
+		strcpy(m_pstrFilename, a_pstrFilename);
+	}
+
+	m_fileformat = a_fileformat;
+	if (m_fileformat == Format::INFER_FROM_FILE_EXTENSION)
+	{
+		// ***** TODO: add this later *****
+		m_fileformat = Format::KTX;
+	}
+
+	m_imageformat = a_imageformat;
+
+	m_uiNumMipmaps = a_uiNumMipmaps;
+	m_pMipmapImages = new RawImage[m_uiNumMipmaps];
+
+	for(unsigned int mip = 0; mip < m_uiNumMipmaps; mip++)
+	{
+		m_pMipmapImages[mip] = a_pMipmapImages[mip];
+	}
+
+	m_uiSourceWidth = a_uiSourceWidth;
+	m_uiSourceHeight = a_uiSourceHeight;
+
+	switch (m_fileformat)
+	{
+	case Format::PKM:
+		m_pheader = new FileHeader_Pkm(this);
+		break;
+
+	case Format::KTX:
+		m_pheader = new FileHeader_Ktx(this);
+		break;
+
+	default:
+		assert(0);
+		break;
+	}
+
+}
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -122,15 +177,18 @@ File::File(const char *a_pstrFilename, Format a_fileformat)
 	szResult = fread( ((FileHeader_Ktx*)m_pheader)->GetData(), 1, sizeof(FileHeader_Ktx::Data), pfile);
 	assert(szResult > 0);
 
+	m_uiNumMipmaps = 1;
+	m_pMipmapImages = new RawImage[m_uiNumMipmaps];
+
 	if (((FileHeader_Ktx*)m_pheader)->GetData()->m_u32BytesOfKeyValueData > 0)
 		fseek(pfile, ((FileHeader_Ktx*)m_pheader)->GetData()->m_u32BytesOfKeyValueData, SEEK_CUR);
-	szResult = fread(&m_uiEncodingBitsBytes, 1, sizeof(unsigned int), pfile);
+	szResult = fread(&m_pMipmapImages->uiEncodingBitsBytes, 1, sizeof(unsigned int), pfile);
 	assert(szResult > 0);
 
-	m_paucEncodingBits = new unsigned char[m_uiEncodingBitsBytes];
-	assert(ftell(pfile) + m_uiEncodingBitsBytes <= fileSize);
-	szResult = fread(m_paucEncodingBits, 1, m_uiEncodingBitsBytes, pfile);
-	assert(szResult == m_uiEncodingBitsBytes);
+	m_pMipmapImages->paucEncodingBits = std::shared_ptr<unsigned char>(new unsigned char[m_pMipmapImages->uiEncodingBitsBytes], [](unsigned char *p) { delete[] p; } );
+	assert(ftell(pfile) + m_pMipmapImages->uiEncodingBitsBytes <= fileSize);
+	szResult = fread(m_pMipmapImages->paucEncodingBits.get(), 1, m_pMipmapImages->uiEncodingBitsBytes, pfile);
+	assert(szResult == m_pMipmapImages->uiEncodingBitsBytes);
 
 	uint32_t uiInternalFormat = ((FileHeader_Ktx*)m_pheader)->GetData()->m_u32GlInternalFormat;
 	uint32_t uiBaseInternalFormat = ((FileHeader_Ktx*)m_pheader)->GetData()->m_u32GlBaseInternalFormat;
@@ -174,31 +232,29 @@ File::File(const char *a_pstrFilename, Format a_fileformat)
 
 	m_uiSourceWidth = ((FileHeader_Ktx*)m_pheader)->GetData()->m_u32PixelWidth;
 	m_uiSourceHeight = ((FileHeader_Ktx*)m_pheader)->GetData()->m_u32PixelHeight;
-	m_uiExtendedWidth = Image::CalcExtendedDimension((unsigned short)m_uiSourceWidth);
-	m_uiExtendedHeight = Image::CalcExtendedDimension((unsigned short)m_uiSourceHeight);
+	m_pMipmapImages->uiExtendedWidth = Image::CalcExtendedDimension((unsigned short)m_uiSourceWidth);
+	m_pMipmapImages->uiExtendedHeight = Image::CalcExtendedDimension((unsigned short)m_uiSourceHeight);
 
-	unsigned int uiBlocks = m_uiExtendedWidth * m_uiExtendedHeight / 16;
+	unsigned int uiBlocks = m_pMipmapImages->uiExtendedWidth * m_pMipmapImages->uiExtendedHeight / 16;
 	Block4x4EncodingBits::Format encodingbitsformat = Image::DetermineEncodingBitsFormat(m_imageformat);
 	unsigned int expectedbytes = uiBlocks * Block4x4EncodingBits::GetBytesPerBlock(encodingbitsformat);
-	assert(expectedbytes == m_uiEncodingBitsBytes);
+	assert(expectedbytes == m_pMipmapImages->uiEncodingBitsBytes);
 
 	fclose(pfile);
 }
 
 File::~File()
 {
-
-	if (m_paucEncodingBits != nullptr)
+	if (m_pMipmapImages != nullptr)
 	{
-		delete[] m_paucEncodingBits;
-		m_paucEncodingBits = nullptr;
+		delete [] m_pMipmapImages;
 	}
+
 	if(m_pstrFilename != nullptr)
 	{
 		delete[] m_pstrFilename;
 		m_pstrFilename = nullptr;
 	}
-
 	if (m_pheader != nullptr)
 	{
 		delete m_pheader;
@@ -244,8 +300,16 @@ void File::UseSingleBlock(int a_iPixelX, int a_iPixelY)
 
 	m_uiSourceWidth = 4;
 	m_uiSourceHeight = 4;
-	m_uiExtendedWidth = Image::CalcExtendedDimension((unsigned short)m_uiSourceWidth);
-	m_uiExtendedHeight = Image::CalcExtendedDimension((unsigned short)m_uiSourceHeight);
+
+	Block4x4EncodingBits::Format encodingbitsformat = Image::DetermineEncodingBitsFormat(m_imageformat);
+	unsigned int uiEncodingBitsBytesPerBlock = Block4x4EncodingBits::GetBytesPerBlock(encodingbitsformat);
+
+	int numMipmaps = 1;
+	RawImage* pMipmapImages = new RawImage[numMipmaps];
+	pMipmapImages[0].uiExtendedWidth = Image::CalcExtendedDimension((unsigned short)m_uiSourceWidth);
+	pMipmapImages[0].uiExtendedHeight = Image::CalcExtendedDimension((unsigned short)m_uiSourceHeight);
+	pMipmapImages[0].uiEncodingBitsBytes = 0;
+	pMipmapImages[0].paucEncodingBits = std::shared_ptr<unsigned char>(new unsigned char[uiEncodingBitsBytesPerBlock], [](unsigned char *p) { delete[] p; });
 
 	//block position in pixels
 	// remove the bottom 2 bits to get the block coordinates 
@@ -255,8 +319,6 @@ void File::UseSingleBlock(int a_iPixelX, int a_iPixelY)
 	int numXBlocks = (origWidth / 4);
 	int numYBlocks = (origHeight / 4);
 	
-	Block4x4EncodingBits::Format encodingbitsformat = Image::DetermineEncodingBitsFormat(m_imageformat);
-	unsigned int uiEncodingBitsBytesPerBlock = Block4x4EncodingBits::GetBytesPerBlock(encodingbitsformat);
 
 	// block location 
 	//int iBlockX = (a_iPixelX % 4) == 0 ? a_iPixelX / 4.0f : (a_iPixelX / 4) + 1;
@@ -266,13 +328,15 @@ void File::UseSingleBlock(int a_iPixelX, int a_iPixelY)
 	
 	unsigned int num = numXBlocks*numYBlocks;
 	unsigned int uiH = 0, uiV = 0;
+	unsigned char* pEncodingBits = m_pMipmapImages[0].paucEncodingBits.get();
 	for (unsigned int uiBlock = 0; uiBlock < num; uiBlock++)
 	{
 		if (uiH == iBlockPosX && uiV == iBlockPosY)
 		{
+			memcpy(pMipmapImages[0].paucEncodingBits.get(),pEncodingBits, uiEncodingBitsBytesPerBlock);
 			break;
 		}
-		m_paucEncodingBits += uiEncodingBitsBytesPerBlock;
+		pEncodingBits += uiEncodingBitsBytesPerBlock;
 		uiH += 4;
 
 		if (uiH >= origWidth)
@@ -281,6 +345,9 @@ void File::UseSingleBlock(int a_iPixelX, int a_iPixelY)
 			uiV += 4;
 		}
 	}
+
+	delete [] m_pMipmapImages;
+	m_pMipmapImages = pMipmapImages;
 }
 // ----------------------------------------------------------------------------------------------------
 //
@@ -295,11 +362,23 @@ void File::Write()
 	}
 
 	m_pheader->Write(pfile);
-	unsigned int iResult = (int)fwrite(m_paucEncodingBits, 1, m_uiEncodingBitsBytes, pfile);
-	if (iResult != m_uiEncodingBitsBytes)
+
+	for(unsigned int mip = 0; mip < m_uiNumMipmaps; mip++)
+	{
+		if(m_fileformat == Format::KTX)
+		{
+			// Write u32 image size
+			uint32_t u32ImageSize = m_pMipmapImages[mip].uiEncodingBitsBytes;
+			uint32_t szBytesWritten = fwrite(&u32ImageSize, 1, sizeof(u32ImageSize), pfile);
+			assert(szBytesWritten == sizeof(u32ImageSize));
+		}
+
+		unsigned int iResult = (int)fwrite(m_pMipmapImages[mip].paucEncodingBits.get(), 1, m_pMipmapImages[mip].uiEncodingBitsBytes, pfile);
+		if (iResult != m_pMipmapImages[mip].uiEncodingBitsBytes)
 	{
 		printf("Error: couldn't write Etc file (%s)\n", m_pstrFilename);
 		exit(1);
+		}
 	}
 
 	fclose(pfile);

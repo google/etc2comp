@@ -395,8 +395,9 @@ namespace Etc
 	{
 		static const bool DEBUG_PRINT = false;
 
+		bool boolRGBX = m_pblockParent->GetImageSource()->GetErrorMetric() == ErrorMetric::RGBX;
 
-		if (m_pblockParent->GetSourceAlphaMix() == Block4x4::SourceAlphaMix::OPAQUE)
+		if (m_pblockParent->GetSourceAlphaMix() == Block4x4::SourceAlphaMix::OPAQUE || boolRGBX)
 		{
 			ColorFloatRGBA frgbaSumUL = m_pafrgbaSource[0] + m_pafrgbaSource[1] + m_pafrgbaSource[4] + m_pafrgbaSource[5];
 			ColorFloatRGBA frgbaSumLL = m_pafrgbaSource[2] + m_pafrgbaSource[3] + m_pafrgbaSource[6] + m_pafrgbaSource[7];
