@@ -112,7 +112,7 @@ Options:
     -effort <amount>              number between 0 and 100 to specify the encoding quality 
                                   (100 is the highest quality)
     -errormetric <error_metric>   specify the error metric, the options are
-                                  rgba, rec709, numeric and normalxyz
+                                  rgba, rgbx, rec709, numeric and normalxyz
     -format <etc_format>          ETC1, RGB8, SRGB8, RGBA8, SRGB8, RGB8A1,
                                   SRGB8A1 or R11
     -help                         prints this message
@@ -120,6 +120,8 @@ Options:
     -normalizexyz                 normalize RGB to have a length of 1
     -verbose or -v                shows status information during the encoding
                                   process
+	-mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)
+	-mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)
 
 * -analyze will run an analysis of the encoding and place it in folder 
 "analysis_folder" (e.g. ../analysis/kodim05).  within the analysis_folder, a folder 
@@ -140,10 +142,12 @@ will dictate what error analysis is used in the comparison.
 to apply during the encoding.
 
 * -errormetric selects the fitting algorithm used by the encoder.  "rgba" calculates 
-RMS error using RGB components that are weighted by A.  "rec709" is similar to "rgba", 
-except the RGB components are also weighted according to Rec709.  "numeric" 
-calculates RMS error using unweighted RGBA components.  "normalize" calculates error 
-based on dot product and vector length for RGB and RMS error for A.
+RMS error using RGB components that are weighted by A.  "rgbx" calculates RMS error 
+using RGBA components, where A is treated as an additional data channel, instead of 
+as alpha.  "rec709" is similar to "rgba", except the RGB components are also weighted 
+according to Rec709.  "numeric" calculates RMS error using unweighted RGBA components.  
+"normalize" calculates error based on dot product and vector length for RGB and RMS 
+error for A.
 
 * -help prints out the usage message
 
@@ -153,6 +157,14 @@ based on dot product and vector length for RGB and RMS error for A.
 
 * -verbose shows information on the current encoding process. It will then display the 
 PSNR and time time it took to encode the image.
+
+* -mipmaps takes an argument that specifies how many mipmaps to generate from the 
+source image.  The mipmaps are generated with a lanczos3 filter using edge clamping.
+If the mipmaps option is not specified no mipmaps are created.
+
+* -mipwrap takes an argument that specifies the mipmap filter wrap mode.  The options 
+are "x", "y" and "xy" which specify wrapping in x only, y only or x and y respectively.
+The default options are clamping in both x and y.
 
 Note: Path names can use slashes or backslashes.  The tool will convert the 
 slashes to the appropriate polarity for the current platform.
