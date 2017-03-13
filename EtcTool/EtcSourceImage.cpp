@@ -97,12 +97,12 @@ namespace Etc
 	{
 		unsigned char* paucPixels = nullptr;
 
-		int iWidth;
-		int iHeight;
-		int iBitsPerPixel;
+		int iWidth = 0;
+		int iHeight = 0;
 		bool bool16BitImage = false;
 	
 #if USE_STB_IMAGE_LOAD
+		int iBitsPerPixel;
 		//if stb_iamge is available, only use it to load files other than png
 		char *fileExt = strrchr(m_pstrFilename, '.');
 

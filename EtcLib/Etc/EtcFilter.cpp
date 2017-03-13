@@ -6,7 +6,7 @@
 namespace Etc
 {
 
-static const double M_PI = 3.14159265358979323846;
+static const double PiConst = 3.14159265358979323846;
 
 inline double sinc(double x) 
 {
@@ -15,7 +15,7 @@ inline double sinc(double x)
         return 1.0;
     }
 
-    return sin(M_PI * x) / (M_PI * x);
+    return sin(PiConst * x) / (PiConst * x);
 }
 
 //inline float sincf( float x )
@@ -296,10 +296,10 @@ int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight,
             }
 
             pPixel = pDestImage + (iRow * destWidth) + iCol;
-            pPixel->rgba[0]   = (unsigned char)(__max( 0, __min( 255.0, dRed)));
-            pPixel->rgba[1] = (unsigned char)(__max( 0, __min( 255.0, dGreen)));
-            pPixel->rgba[2]  = (unsigned char)(__max( 0, __min( 255.0, dBlue)));
-            pPixel->rgba[3] = (unsigned char)(__max( 0, __min( 255.0, dAlpha)));
+            pPixel->rgba[0]   = (unsigned char)(std::max( 0.0, std::min( 255.0, dRed)));
+            pPixel->rgba[1] = (unsigned char)(std::max( 0.0, std::min( 255.0, dGreen)));
+            pPixel->rgba[2]  = (unsigned char)(std::max( 0.0, std::min( 255.0, dBlue)));
+            pPixel->rgba[3] = (unsigned char)(std::max( 0.0, std::min( 255.0, dAlpha)));
         }
     }
 
