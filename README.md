@@ -82,12 +82,12 @@ The Linux build was tested on this config:
 
 1. Verify linux has cmake and C++-11 capable g++ installed
 1. Open shell
-1  Run `mkdir build_linux`
-1  Run `cd build_linux`
-1. Invoke cmake to create the make files.
-1. Run ‘make’
-1. navigate to the newly created EtcTool directory ‘cd EtcTool’
-1. run the executable: ‘./EtcTool -argfile ../../EtcTool/args.txt’
+1. Run `mkdir build_linux`
+1. Run `cd build_linux`
+1. Run `cmake ../`
+1. Run `make`
+1. navigate to the newly created EtcTool directory `cd EtcTool`
+1. run the executable: `./EtcTool -argfile ../../EtcTool/args.txt`
 
 Skip to the <a href="#usage">Usage</a> section for more information about using the
 tool.
