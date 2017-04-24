@@ -651,7 +651,7 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 					if (pstrOutputFilename[c] == ETC_PATH_SLASH)
 					{
 						c++;
-						ptrOutputDir = new char[c];
+						ptrOutputDir = new char[c+1];
 						strncpy(ptrOutputDir, pstrOutputFilename, c);
 						ptrOutputDir[c] = '\0';
 						CreateNewDir(ptrOutputDir);
