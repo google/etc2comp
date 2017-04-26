@@ -61,8 +61,13 @@ Add this launch argument: ‘-argfile ../../EtcTool/args.txt’
 
 ### SetUp for Windows
 
-1. Make a `build_vs2015` directory. 
-1. Invoke cmake to create the Visual Studio project.
+1. Open a *Terminal* window and navigate to the project directory.
+1. Run `mkdir build_vs`
+1. Run `cd build_vs`
+1. Run CMAKE, noting what build version you need, and pointing to the parent directory as the source root; 
+  For VS 2013 : `cmake -G "Visual Studio 12 2013 Win64" ../`
+  For VS 2015 : `cmake -G "Visual Studio 14 2015 Win64" ../`
+  NOTE: To see what supported Visual Studio outputs there are, run `cmake -G`
 1. open the 'EtcTest' solution
 1. make the 'EtcTool' project the start up project 
 1. (optional) in the project properties, under 'Debugging ->command arguments' 
@@ -77,12 +82,12 @@ The Linux build was tested on this config:
 
 1. Verify linux has cmake and C++-11 capable g++ installed
 1. Open shell
-1. Run `mkdir build_linux`
-1. Run `cd build_linux`
-1. Run `cmake ../`
-1. Run `make`
-1. navigate to the newly created EtcTool directory `cd EtcTool`
-1. run the executable: `./EtcTool -argfile ../../EtcTool/args.txt`
+1  Run `mkdir build_linux`
+1  Run `cd build_linux`
+1. Invoke cmake to create the make files.
+1. Run ‘make’
+1. navigate to the newly created EtcTool directory ‘cd EtcTool’
+1. run the executable: ‘./EtcTool -argfile ../../EtcTool/args.txt’
 
 Skip to the <a href="#usage">Usage</a> section for more information about using the
 tool.

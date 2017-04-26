@@ -34,6 +34,10 @@ particular file format (e.g. ETC1, RGB8, RGBA8, R11)
 
 namespace Etc
 {
+	// ----------------------------------------------------------------------------------------------------
+	//
+	const float Block4x4Encoding::LUMA_WEIGHT = 3.0f;
+	const float Block4x4Encoding::CHROMA_BLUE_WEIGHT = 0.5f;
 
 	// ----------------------------------------------------------------------------------------------------
 	//
