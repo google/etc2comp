@@ -21,4 +21,4 @@ file(GLOB SOURCES
 	${PROJECT_SOURCE_DIR}/EtcCodec/*.h
 	${PROJECT_SOURCE_DIR}/Etc/*.cpp
 	${PROJECT_SOURCE_DIR}/EtcCodec/*.cpp)
-ADD_LIBRARY(EtcLib ${SOURCES})
+add_library(EtcLib ${SOURCES})

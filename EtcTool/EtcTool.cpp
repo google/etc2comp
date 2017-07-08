@@ -51,10 +51,13 @@ using namespace Etc;
 #if ETC_WINDOWS
 const char *ETC_MKDIR_COMMAND = "mkdir";
 
+#ifndef __MINGW32__
 int strcasecmp(const char *s1, const char *s2)
 {
 	return _stricmp(s1, s2);
 }
+#endif
+
 #else
 const char *ETC_MKDIR_COMMAND = "mkdir -p";
 #endif

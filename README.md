@@ -42,14 +42,14 @@ To build the Etc2Comp binary:
  1. Run `mkdir build_xcode`
  1. Run `cd build_xcode`
  1. Run `cmake -G Xcode ../`
- 1. Open *Xcode* and import the `build_xcode/EtcTest.xcodeproj` file.
+ 1. Open *Xcode* and import the `build_xcode/Etc2Comp.xcodeproj` file.
  1. Open the Product menu and choose Build For -> Running.
  1. Once the build succeeds the binary located at `build_xcode/EtcTool/Debug/EtcTool`
 can be executed.
 
 Optional
 Xcode EtcTool ‘Run’ preferences
-note: if the build_xcode/EtcTest.xcodeproj is manually deleted then some Xcode preferences 
+note: if the build_xcode/Etc2Comp.xcodeproj is manually deleted then some Xcode preferences 
 will need to be set by hand after cmake is run (these prefs are retained across 
 cmake updates if the .xcodeproj is not deleted/removed)
 
@@ -68,7 +68,7 @@ Add this launch argument: ‘-argfile ../../EtcTool/args.txt’
   For VS 2013 : `cmake -G "Visual Studio 12 2013 Win64" ../`
   For VS 2015 : `cmake -G "Visual Studio 14 2015 Win64" ../`
   NOTE: To see what supported Visual Studio outputs there are, run `cmake -G`
-1. open the 'EtcTest' solution
+1. open the 'Etc2Comp' solution
 1. make the 'EtcTool' project the start up project 
 1. (optional) in the project properties, under 'Debugging ->command arguments' 
 add the argfile textfile thats included in the EtcTool directory. 
