@@ -120,23 +120,25 @@ Options:
     -normalizexyz                 normalize RGB to have a length of 1
     -verbose or -v                shows status information during the encoding
                                   process
-	-mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)
-	-mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)
+    -mipmaps or -m <mip_count>    sets the maximum number of mipmaps to generate (default=1)
+    -mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)
 
 * -analyze will run an analysis of the encoding and place it in folder 
 "analysis_folder" (e.g. ../analysis/kodim05).  within the analysis_folder, a folder 
 will be created with a name of the current date/time (e.g. 20151204_153306).  this 
 date/time folder is used to compare encodings of the same texture over time.  
 within the date/time folder is a text file with several encoding stats and a 2x png 
-image showing the encoding mode for each 4x4 block.
+image showing the encoding mode for each 4x4 block. Analyze only works if generating
+mipmaps is disabled.
 
 * -argfile allows additional command line arguments to be placed in a text file
 
 * -blockAtHV selects the 4x4 pixel subset of the source image at position (H,V).  
 This is mainly used for debugging
 
-* -compare compares the source image to the created encoded image. The encoding
-will dictate what error analysis is used in the comparison.
+* -compare compares the image given as the parameter to the newly created encoded image.
+The encoding will dictate what error analysis is used in the comparison. Currently only
+supports .ktx as the file format.
 
 * -effort uses an "amount" between 0 and 100 to determine how much additional effort 
 to apply during the encoding.
