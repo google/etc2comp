@@ -13,6 +13,16 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.1)
+
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+	message(FATAL_ERROR "Please create a separate build directory and call cmake from there.")
+endif()
+
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build. Supported options are: Debug, Release" FORCE)
+	message("CMAKE_BUILD_TYPE was not specified. Defaulting to ${CMAKE_BUILD_TYPE}")
+endif()
+
 project(Etc2Comp)
 
 set(CMAKE_CXX_STANDARD 11)
