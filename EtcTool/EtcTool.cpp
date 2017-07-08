@@ -654,7 +654,7 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 					if (pstrOutputFilename[c] == ETC_PATH_SLASH)
 					{
 						c++;
-						ptrOutputDir = new char[c];
+						ptrOutputDir = new char[c + 1];
 						strncpy(ptrOutputDir, pstrOutputFilename, c);
 						ptrOutputDir[c] = '\0';
 						CreateNewDir(ptrOutputDir);
@@ -662,11 +662,6 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 					}
 				}
 
-				if (ptrOutputDir == nullptr)
-				{
-					printf("couldnt find a place to put converted images\n");
-					exit(1);
-				}
 			}
 		}
 		else if (strcmp(a_apstrArgs[iArg], "-verbose") == 0 ||
@@ -819,7 +814,7 @@ void Commands::PrintUsageMessage(void)
 		char strCommand[300];
 
 #if ETC_WINDOWS
-		sprintf_s(strCommand, "if not exist %s %s %s", path, ETC_MKDIR_COMMAND, path);
+		sprintf(strCommand, "if not exist %s %s %s", path, ETC_MKDIR_COMMAND, path);
 #else
 		sprintf(strCommand, "%s %s", ETC_MKDIR_COMMAND, path);
 #endif
