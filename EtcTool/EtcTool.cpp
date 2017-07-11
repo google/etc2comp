@@ -165,7 +165,7 @@ int main(int argc, const char * argv[])
 
 		// Calculate the maximum number of possible mipmaps
 		{
-			int dim = (uiSourceWidth < uiSourceHeight)?uiSourceWidth:uiSourceHeight;
+			int dim = (uiSourceWidth > uiSourceHeight)?uiSourceWidth:uiSourceHeight;
 			int maxMips = 0;
 			while(dim >= 1)
 			{
