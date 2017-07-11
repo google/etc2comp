@@ -70,12 +70,12 @@ namespace Etc
 		auto mipWidth = a_uiSourceWidth;
 		auto mipHeight = a_uiSourceHeight;
 		int totalEncodingTime = 0;
-		for(unsigned int mip = 0; mip < a_uiMaxMipmaps && mipWidth >= 1 && mipHeight >= 1; mip++)
+		for (unsigned int mip = 0; mip < a_uiMaxMipmaps; mip++)
 		{
 			float* pImageData = nullptr;
 			float* pMipImage = nullptr;
 
-			if(mip == 0)
+			if (mip == 0)
 			{
 				pImageData = a_pafSourceRGBA;
 			}
@@ -88,23 +88,23 @@ namespace Etc
 				}
 			}
 
-			if ( pImageData )
+			if (pImageData)
 			{
 			
 				Image image(pImageData, mipWidth, mipHeight,	a_eErrMetric);
 
-			image.m_bVerboseOutput = a_bVerboseOutput;
-			image.Encode(a_format, a_eErrMetric, a_fEffort, a_uiJobs, a_uiMaxJobs);
+				image.m_bVerboseOutput = a_bVerboseOutput;
+				image.Encode(a_format, a_eErrMetric, a_fEffort, a_uiJobs, a_uiMaxJobs);
 
-			a_pMipmapImages[mip].paucEncodingBits = std::shared_ptr<unsigned char>(image.GetEncodingBits(), [](unsigned char *p) { delete[] p; });
-			a_pMipmapImages[mip].uiEncodingBitsBytes = image.GetEncodingBitsBytes();
-			a_pMipmapImages[mip].uiExtendedWidth = image.GetExtendedWidth();
-			a_pMipmapImages[mip].uiExtendedHeight = image.GetExtendedHeight();
+				a_pMipmapImages[mip].paucEncodingBits = std::shared_ptr<unsigned char>(image.GetEncodingBits(), [](unsigned char *p) { delete[] p; });
+				a_pMipmapImages[mip].uiEncodingBitsBytes = image.GetEncodingBitsBytes();
+				a_pMipmapImages[mip].uiExtendedWidth = image.GetExtendedWidth();
+				a_pMipmapImages[mip].uiExtendedHeight = image.GetExtendedHeight();
 
-			totalEncodingTime += image.GetEncodingTimeMs();
+				totalEncodingTime += image.GetEncodingTimeMs();
 			}
 
-			if(pMipImage)
+			if (pMipImage)
 			{
 				delete[] pMipImage;
 			}
@@ -114,8 +114,20 @@ namespace Etc
 				break;
 			}
 
-			mipWidth >>= 1;
-			mipHeight >>= 1;
+			if (mipWidth == 1 && mipHeight == 1)
+			{
+				break;
+			}
+
+			if (mipWidth > 1)
+			{
+				mipWidth >>= 1;
+			}
+
+			if (mipHeight > 1)
+			{
+				mipHeight >>= 1;
+			}
 		}
 
 		*a_piEncodingTime_ms = totalEncodingTime;

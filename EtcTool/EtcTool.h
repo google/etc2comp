@@ -25,7 +25,10 @@
 	extern const char *ETC_MKDIR_COMMAND;
 	extern const char *ETC_IF_DIR_NOT_EXIST_COMMAND;
 
+#ifndef __MINGW32__
 	int strcasecmp(const char *s1, const char *s2);
+#endif
+
 #else
 	const char ETC_PATH_SLASH = '/';
 	const char ETC_BAD_PATH_SLASH = '\\';
