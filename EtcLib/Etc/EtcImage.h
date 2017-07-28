@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <chrono>
+
 //#include "Etc.h"
 #include "EtcColorFloatRGBA.h"
 #include "EtcBlock4x4EncodingBits.h"
@@ -31,6 +33,7 @@ namespace Etc
     class Image
     {
     public:
+		using Milliseconds = std::chrono::milliseconds;
 
 		//the differnt warning and errors that can come up during encoding
 		enum  EncodingStatus
@@ -142,9 +145,9 @@ namespace Etc
 			return m_uiEncodingBitsBytes;
 		}
 
-		inline int GetEncodingTimeMs(void)
+		inline Milliseconds GetEncodingTime(void)
 		{
-			return m_iEncodeTime_ms;
+			return m_msEncodeTime;
 		}
 
 		float GetError(void);
@@ -237,7 +240,7 @@ namespace Etc
 		ErrorMetric m_errormetric;
 		float m_fEffort;
 		// stats
-		int m_iEncodeTime_ms;
+		Milliseconds m_msEncodeTime;
 		
 		SortedBlockList *m_psortedblocklist;
 		//this will hold any warning or errors that happen during encoding

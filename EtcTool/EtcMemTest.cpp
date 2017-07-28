@@ -237,7 +237,7 @@ int RunMemTest(bool verboseOutput, size_t numTestIterations)
 			encStatus = image.Encode(format, e_ErrMetric, curEffort, jobs, MAX_JOBS);
 			if (verboseOutput)
 			{
-				printf("  encode time = %dms\n", image.GetEncodingTimeMs());
+				printf("  encode time = %dms\n", image.GetEncodingTime().count());
 				printf("EncodedImage: %s\n", outFile.c_str());
 				printf("status bitfield: %u\n", encStatus);
 			}

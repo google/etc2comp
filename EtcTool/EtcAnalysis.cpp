@@ -94,7 +94,7 @@ namespace Etc
 					fprintf(apfile[i], "PSNR(rgba) = %.4f\n", ConvertErrorToPSNR(fImageError, (iComponents+1) * uiImagePixels));
 				}
 				
-				fprintf(apfile[i], "EncodeTime = %.3f seconds\n", (float)m_pimage->GetEncodingTimeMs() / 1000.0f);
+				fprintf(apfile[i], "EncodeTime = %.3f seconds\n", (float)m_pimage->GetEncodingTime().count() / 1000.0f);
 			}
 
 
