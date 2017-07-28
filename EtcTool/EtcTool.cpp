@@ -264,7 +264,7 @@ int main(int argc, const char * argv[])
 		encStatus = image.Encode(commands.format, commands.e_ErrMetric, commands.fEffort, commands.uiJobs,MAX_JOBS);
 		if (commands.verboseOutput)
 		{
-			printf("  encode time = %dms\n", image.GetEncodingTimeMs());
+			printf("  encode time = %dms\n", image.GetEncodingTime().count());
 			printf("EncodedImage: %s\n", commands.pstrOutputFilename);
 			printf("status bitfield: %u\n", encStatus);
 		}
