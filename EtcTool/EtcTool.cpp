@@ -802,7 +802,7 @@ void Commands::PrintUsageMessage(void)
 	printf("    -normalizexyz                 normalize RGB to have a length of 1\n");
 	printf("    -verbose or -v                shows status information during the encoding\n");
 	printf("                                  process\n");
-	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)\n");
+	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipmaps to generate (default=1)\n");
 	printf("    -mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)\n");
 	printf("\n");
 
