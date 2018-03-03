@@ -228,6 +228,7 @@ int FilterTwoPass( RGBCOLOR *pSrcImage, int srcWidth, int srcHeight,
     pTempImage = (RGBCOLOR *)malloc( destWidth * srcHeight * sizeof(RGBCOLOR) );
     if ( pTempImage == NULL )
     {
+        free( contrib );
         return 0;
     }
 
