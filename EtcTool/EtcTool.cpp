@@ -816,7 +816,7 @@ void Commands::PrintUsageMessage(void)
 		char strCommand[300];
 
 #if ETC_WINDOWS
-		sprintf_s(strCommand, "if not exist %s %s %s", path, ETC_MKDIR_COMMAND, path);
+		sprintf_s(strCommand, "if not exist \"%s\" %s \"%s\"", path, ETC_MKDIR_COMMAND, path);
 #else
 		sprintf(strCommand, "%s %s", ETC_MKDIR_COMMAND, path);
 #endif
