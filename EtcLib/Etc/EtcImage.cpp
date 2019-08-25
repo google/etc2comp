@@ -189,11 +189,11 @@ namespace Etc
 			m_pablock = nullptr;
 		}
 
-		/*if (m_paucEncodingBits != nullptr)
+		if (m_paucEncodingBits != nullptr)
 		{
 			delete[] m_paucEncodingBits;
 			m_paucEncodingBits = nullptr;
-		}*/
+		}
 	}
 
 	// ----------------------------------------------------------------------------------------------------
