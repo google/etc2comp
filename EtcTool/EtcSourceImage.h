@@ -36,6 +36,7 @@ namespace Etc
 		void SetName(const char *a_pstrFilename);
 
 		void NormalizeXYZ(void);
+		void FlipY(void);
 
 		inline const char *GetFilename(void)
 		{

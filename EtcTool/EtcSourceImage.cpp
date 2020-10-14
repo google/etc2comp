@@ -288,5 +288,25 @@ namespace Etc
 
 	// ----------------------------------------------------------------------------------------------------
 	//
+	void SourceImage::FlipY(void)
+	{
+		const size_t rowSizeBytes = sizeof(ColorFloatRGBA) * m_uiWidth;
+		char *pacRow = new char[rowSizeBytes];
+		assert(pacRow);
+
+		for (int iY = 0; iY < m_uiHeight / 2; ++iY)
+		{
+			ColorFloatRGBA *row1 = m_pafrgbaPixels + m_uiWidth * iY;
+			ColorFloatRGBA *row2 = m_pafrgbaPixels + m_uiWidth * (m_uiHeight - 1 - iY);
+			memcpy(pacRow, row1, rowSizeBytes);
+			memcpy(row1, row2, rowSizeBytes);
+			memcpy(row2, pacRow, rowSizeBytes);
+		}
+
+		delete [] pacRow;
+	}
+
+	// ----------------------------------------------------------------------------------------------------
+	//
 
 }	// namespace Etc
