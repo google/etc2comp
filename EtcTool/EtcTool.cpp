@@ -90,6 +90,7 @@ public:
 		i_vPixel = -1;
 		verboseOutput = false;
 		boolNormalizeXYZ = false;
+		boolFlipY = false;
 		mipmaps = 1;
 		mipFilterFlags = Etc::FILTER_WRAP_NONE;
 	}
@@ -114,6 +115,7 @@ public:
 	int i_hPixel;
 	int i_vPixel;
 	bool boolNormalizeXYZ;
+	bool boolFlipY;
 	int mipmaps;
 	unsigned int mipFilterFlags;
 };
@@ -151,6 +153,10 @@ int main(int argc, const char * argv[])
 	if (commands.boolNormalizeXYZ)
 	{
 		sourceimage.NormalizeXYZ();
+	}
+	if (commands.boolFlipY)
+	{
+		sourceimage.FlipY();
 	}
 
 	unsigned int uiSourceWidth = sourceimage.GetWidth();
@@ -628,6 +634,11 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 		{
 			boolNormalizeXYZ = true;
 		}
+		else if (strcmp(a_apstrArgs[iArg], "-flipy") == 0 ||
+				 strcmp(a_apstrArgs[iArg], "-flipY") == 0)
+		{
+			boolFlipY = true;
+		}
 		else if (strcmp(a_apstrArgs[iArg], "-output") == 0)
 		{
 			++iArg;
@@ -800,6 +811,7 @@ void Commands::PrintUsageMessage(void)
 	printf("    -help                         prints this message\n");
 	printf("    -jobs or -j <thread_count>    specifies the number of threads (default=1)\n");
 	printf("    -normalizexyz                 normalize RGB to have a length of 1\n");
+	printf("    -flipy                        flip the image vertically\n");
 	printf("    -verbose or -v                shows status information during the encoding\n");
 	printf("                                  process\n");
 	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)\n");
