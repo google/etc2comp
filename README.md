@@ -1,5 +1,9 @@
 # Etc2Comp - Texture to ETC2 compressor
 
+![Ubuntu](https://github.com/google/etc2comp-1/workflows/Ubuntu/badge.svg)
+![MacOS](https://github.com/google/etc2comp-1/workflows/MacOS/badge.svg)
+![Windows](https://github.com/google/etc2comp-1/workflows/Windows/badge.svg)
+
 Etc2Comp is a command line tool that converts textures (e.g. bitmaps)
 into the [ETC2](https://en.wikipedia.org/wiki/Ericsson_Texture_Compression)
 format. The tool is built with a focus on encoding performance
