@@ -1,5 +1,7 @@
 # Etc2Comp - Texture to ETC2 compressor
 
+*This repo is no longer maintained.*
+
 Etc2Comp is a command line tool that converts textures (e.g. bitmaps)
 into the [ETC2](https://en.wikipedia.org/wiki/Ericsson_Texture_Compression)
 format. The tool is built with a focus on encoding performance
