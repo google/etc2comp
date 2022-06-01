@@ -55,7 +55,9 @@ typedef double	f64;
 
 // 0=disable. stb_image can be used if you need to compress 
 //other image formats like jpg
+#ifndef USE_STB_IMAGE_LOAD
 #define USE_STB_IMAGE_LOAD 0	
+#endif
 
 #if ETC_WINDOWS
 #include <SDKDDKVer.h>
