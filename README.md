@@ -122,7 +122,7 @@ Options:
     -normalizexyz                 normalize RGB to have a length of 1
     -verbose or -v                shows status information during the encoding
                                   process
-	-mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)
+	-mipmaps or -m <mip_count>    sets the maximum number of mipmaps to generate (default=1)
 	-mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)
 
 * -analyze will run an analysis of the encoding and place it in folder 
