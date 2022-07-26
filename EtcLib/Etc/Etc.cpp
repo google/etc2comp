@@ -116,6 +116,14 @@ namespace Etc
 
 			mipWidth >>= 1;
 			mipHeight >>= 1;
+
+			// Get out of the loop if both shifted dimensions are zero
+			if ((mipWidth==0) && (mipHeight==0))
+				break;
+
+			// Make sure to generate mipmap chain down to 1x1 for iOS
+			if (mipWidth==0) mipWidth = 1;
+			if (mipHeight==0) mipHeight = 1;
 		}
 
 		*a_piEncodingTime_ms = totalEncodingTime;
