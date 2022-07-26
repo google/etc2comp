@@ -115,8 +115,8 @@ Options:
                                   (100 is the highest quality)
     -errormetric <error_metric>   specify the error metric, the options are
                                   rgba, rgbx, rec709, numeric and normalxyz
-    -format <etc_format>          ETC1, RGB8, SRGB8, RGBA8, SRGB8, RGB8A1,
-                                  SRGB8A1 or R11
+    -format <etc_format>          ETC1, RGB8, SRGB8, RGBA8, SRGBA8, RGB8A1,
+                                  SRGB8A1, RG11 or R11
     -help                         prints this message
     -jobs or -j <thread_count>    specifies the number of threads (default=1)
     -normalizexyz                 normalize RGB to have a length of 1
