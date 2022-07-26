@@ -50,7 +50,7 @@ namespace Etc
 		*a_puiEncodingBitsBytes = image.GetEncodingBitsBytes();
 		*a_puiExtendedWidth = image.GetExtendedWidth();
 		*a_puiExtendedHeight = image.GetExtendedHeight();
-		*a_piEncodingTime_ms = image.GetEncodingTimeMs();
+		*a_piEncodingTime_ms = image.GetEncodingTime().count();
 	}
 
 	void EncodeMipmaps(float *a_pafSourceRGBA,
@@ -101,7 +101,7 @@ namespace Etc
 			a_pMipmapImages[mip].uiExtendedWidth = image.GetExtendedWidth();
 			a_pMipmapImages[mip].uiExtendedHeight = image.GetExtendedHeight();
 
-			totalEncodingTime += image.GetEncodingTimeMs();
+			totalEncodingTime += image.GetEncodingTime().count();
 			}
 
 			if(pMipImage)
