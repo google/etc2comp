@@ -17,6 +17,7 @@ Debug/
 ipch/
 *.sdf
 .vs/
+.idea/
 *Debug/
 *Release/
 *debug*/

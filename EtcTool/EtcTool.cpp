@@ -51,10 +51,13 @@ using namespace Etc;
 #if ETC_WINDOWS
 const char *ETC_MKDIR_COMMAND = "mkdir";
 
+#ifndef __MINGW32__
 int strcasecmp(const char *s1, const char *s2)
 {
 	return _stricmp(s1, s2);
 }
+#endif
+
 #else
 const char *ETC_MKDIR_COMMAND = "mkdir -p";
 #endif
@@ -162,7 +165,7 @@ int main(int argc, const char * argv[])
 
 		// Calculate the maximum number of possible mipmaps
 		{
-			int dim = (uiSourceWidth < uiSourceHeight)?uiSourceWidth:uiSourceHeight;
+			int dim = (uiSourceWidth > uiSourceHeight)?uiSourceWidth:uiSourceHeight;
 			int maxMips = 0;
 			while(dim >= 1)
 			{
@@ -441,7 +444,7 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 
 			if (iArg >= (a_iArgs))
 			{
-				printf("Error: missing comprison_image parameter for -compare\n");
+				printf("Error: missing comparison_image parameter for -compare\n");
 				return true;
 			}
 			else
@@ -651,7 +654,7 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 					if (pstrOutputFilename[c] == ETC_PATH_SLASH)
 					{
 						c++;
-						ptrOutputDir = new char[c];
+						ptrOutputDir = new char[c + 1];
 						strncpy(ptrOutputDir, pstrOutputFilename, c);
 						ptrOutputDir[c] = '\0';
 						CreateNewDir(ptrOutputDir);
@@ -659,11 +662,6 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 					}
 				}
 
-				if (ptrOutputDir == nullptr)
-				{
-					printf("couldnt find a place to put converted images\n");
-					exit(1);
-				}
 			}
 		}
 		else if (strcmp(a_apstrArgs[iArg], "-verbose") == 0 ||
@@ -802,7 +800,7 @@ void Commands::PrintUsageMessage(void)
 	printf("    -normalizexyz                 normalize RGB to have a length of 1\n");
 	printf("    -verbose or -v                shows status information during the encoding\n");
 	printf("                                  process\n");
-	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)\n");
+	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipmaps to generate (default=1)\n");
 	printf("    -mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)\n");
 	printf("\n");
 
@@ -816,7 +814,7 @@ void Commands::PrintUsageMessage(void)
 		char strCommand[300];
 
 #if ETC_WINDOWS
-		sprintf_s(strCommand, "if not exist %s %s %s", path, ETC_MKDIR_COMMAND, path);
+		sprintf(strCommand, "if not exist %s %s %s", path, ETC_MKDIR_COMMAND, path);
 #else
 		sprintf(strCommand, "%s %s", ETC_MKDIR_COMMAND, path);
 #endif

@@ -44,14 +44,14 @@ To build the Etc2Comp binary:
  1. Run `mkdir build_xcode`
  1. Run `cd build_xcode`
  1. Run `cmake -G Xcode ../`
- 1. Open *Xcode* and import the `build_xcode/EtcTest.xcodeproj` file.
+ 1. Open *Xcode* and import the `build_xcode/Etc2Comp.xcodeproj` file.
  1. Open the Product menu and choose Build For -> Running.
  1. Once the build succeeds the binary located at `build_xcode/EtcTool/Debug/EtcTool`
 can be executed.
 
 Optional
 Xcode EtcTool ‘Run’ preferences
-note: if the build_xcode/EtcTest.xcodeproj is manually deleted then some Xcode preferences 
+note: if the build_xcode/Etc2Comp.xcodeproj is manually deleted then some Xcode preferences 
 will need to be set by hand after cmake is run (these prefs are retained across 
 cmake updates if the .xcodeproj is not deleted/removed)
 
@@ -70,7 +70,7 @@ Add this launch argument: ‘-argfile ../../EtcTool/args.txt’
   For VS 2013 : `cmake -G "Visual Studio 12 2013 Win64" ../`
   For VS 2015 : `cmake -G "Visual Studio 14 2015 Win64" ../`
   NOTE: To see what supported Visual Studio outputs there are, run `cmake -G`
-1. open the 'EtcTest' solution
+1. open the 'Etc2Comp' solution
 1. make the 'EtcTool' project the start up project 
 1. (optional) in the project properties, under 'Debugging ->command arguments' 
 add the argfile textfile thats included in the EtcTool directory. 
@@ -122,23 +122,25 @@ Options:
     -normalizexyz                 normalize RGB to have a length of 1
     -verbose or -v                shows status information during the encoding
                                   process
-	-mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)
-	-mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)
+    -mipmaps or -m <mip_count>    sets the maximum number of mipmaps to generate (default=1)
+    -mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)
 
 * -analyze will run an analysis of the encoding and place it in folder 
 "analysis_folder" (e.g. ../analysis/kodim05).  within the analysis_folder, a folder 
 will be created with a name of the current date/time (e.g. 20151204_153306).  this 
 date/time folder is used to compare encodings of the same texture over time.  
 within the date/time folder is a text file with several encoding stats and a 2x png 
-image showing the encoding mode for each 4x4 block.
+image showing the encoding mode for each 4x4 block. Analyze only works if generating
+mipmaps is disabled.
 
 * -argfile allows additional command line arguments to be placed in a text file
 
 * -blockAtHV selects the 4x4 pixel subset of the source image at position (H,V).  
 This is mainly used for debugging
 
-* -compare compares the source image to the created encoded image. The encoding
-will dictate what error analysis is used in the comparison.
+* -compare compares the image given as the parameter to the newly created encoded image.
+The encoding will dictate what error analysis is used in the comparison. Currently only
+supports .ktx as the file format.
 
 * -effort uses an "amount" between 0 and 100 to determine how much additional effort 
 to apply during the encoding.

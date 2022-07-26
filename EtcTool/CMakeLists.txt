@@ -24,5 +24,9 @@ file(GLOB SOURCES
 	../third_party/lodepng/*.cpp)
 add_executable(EtcTool ${SOURCES})
 
-target_link_libraries (EtcTool EtcLib)
+set(LIBRARIES EtcTool EtcLib)
+if(WIN32)
+	set(LIBRARIES ${LIBRARIES} psapi)
+endif()
+target_link_libraries(${LIBRARIES})
 
