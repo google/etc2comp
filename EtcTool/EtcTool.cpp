@@ -67,7 +67,7 @@ class Commands
 {
 public:
 
-	static const unsigned int MIN_JOBS = 8;
+	static const unsigned int MIN_JOBS = 1;
 
 	Commands(void)
 	{
